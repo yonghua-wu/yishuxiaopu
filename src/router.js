@@ -10,7 +10,6 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home',
       name: 'index',
       component: index,
       children:[
@@ -32,12 +31,12 @@ export default new Router({
       ]
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/browse/classification',
+      name: 'classification',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      component: () => import(/* webpackChunkName: "about" */ './views/browse/classification.vue')
     }
   ]
 })
