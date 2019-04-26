@@ -30,6 +30,8 @@ export default new Router({
         }
       ]
     },
+
+    // browse area
     {
       path: '/browse/classification',
       name: 'classification',
@@ -37,6 +39,28 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/browse/classification.vue')
+    },
+
+    // account area
+    {
+      path: '/account/login',
+      name: 'login',
+      component: () => import('./views/account/login.vue')
+    },
+    {
+      path: '/account/register',
+      name: 'register',
+      component: () => import('./views/account/register.vue')
+    },
+    {
+      path: '/account/setting',
+      name: 'setting',
+      component: () => import('./views/account/setting.vue')
+    },
+    {
+      path: '/account/userinfo',
+      name: 'userinfo',
+      component: () => import('./views/account/userinfo.vue')
     }
   ]
 })

@@ -54,8 +54,12 @@
 export default {
   methods: {
     more: function(e) {
-      console.log('more',e)
-      this.$router.push('/browse/classification')
+      // console.log('more',e)
+      switch(e.target.id){
+        case 'more':
+          this.$router.push('/browse/classification')
+          break;
+      }
     }
   }
 }
