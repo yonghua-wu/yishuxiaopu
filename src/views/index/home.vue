@@ -22,36 +22,16 @@
     </div>
     <div class="recommend">
       <div class="title">书籍推荐</div>
-      <div class="list">
-        <van-col class="item">
-          <div class="img">
-            <img src="../../assets/img.jpg" alt="">
-          </div>
-          <div class="book-name">书的名字书的名字书的名字书的名字书的名字书的名字</div>
-          <van-row class="book-info" type="flex" justify="space-between">
-            <div class="pageviews">浏览：1</div>
-            <div class="creat-time">3分钟前</div>
-          </van-row>
-        </van-col>
-        <!-- <van-col class="item">
-          <div class="img">
-            <img src="../../assets/img.jpg" alt="">
-          </div>
-          <div class="book-name">书的名字书的名字书的名字书的名字书的名字书的名字</div>
-          <van-row class="book-info" type="flex" justify="space-between">
-            <div class="pageviews">浏览：1</div>
-            <div class="creat-time">3分钟前</div>
-          </van-row>
-        </van-col> -->
-        <van-col class="item">
-          <div class="no-more">没有更多了</div>
-        </van-col>
-      </div>
+      <book-list />
     </div>
   </div>
 </template>
 <script>
+import BookList from '../../components/BookList.vue'
 export default {
+  components: {
+    'book-list': BookList
+  },
   methods: {
     more: function(e) {
       // console.log('more',e)
@@ -59,6 +39,8 @@ export default {
         case 'more':
           this.$router.push('/browse/classification')
           break;
+        default :
+          this.$router.push('/browse/list')
       }
     }
   }
@@ -105,39 +87,9 @@ export default {
   }
   .item {
     background-color: #fff;
-    border: 1px solid rgba(235, 237, 240, 0.534);
     border-radius: 8px;
     margin-bottom: 10px;
     width: 48%;
-    .img {
-      width: 100%;
-      height: 0;
-      padding-top: 100%; // 让图片高度等于宽度
-      position: relative;
-      img {
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-    }
-    .book-name {
-      margin: 8px 10px;
-      font-size: 14px;
-      font-weight: 600;
-      display: -webkit-box;    
-      -webkit-box-orient: vertical;   
-      -webkit-line-clamp: 1;
-      overflow: hidden;
-    }
-    .book-info {
-      margin: 0px 10px 8px 10px;
-      color: #888;
-      font-size: 12px;
-    }
     .no-more {
       min-height: 80px;
       line-height: 80px;

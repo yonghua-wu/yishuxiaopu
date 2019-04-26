@@ -40,7 +40,13 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/browse/classification.vue')
     },
+    {
+      path: '/browse/list',
+      name: 'list',
+      component: () => import('./views/browse/list.vue')
+    },
 
+    
     // account area
     {
       path: '/account/login',
