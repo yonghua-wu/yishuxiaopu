@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <router-view/>
-    <van-tabbar v-model="active" :change="tabbar()">
+    <van-tabbar v-model="active" @change="tabbar()">
       <van-tabbar-item icon="home-o">首页</van-tabbar-item>
       <van-tabbar-item icon="comment-o">消息</van-tabbar-item>
       <van-tabbar-item icon="manager-o">我的</van-tabbar-item>
@@ -15,6 +15,18 @@ export default {
     return {
       active: 0
     }
+  },
+  mounted: function(){
+    if(this.$route.path == '/') {
+      this.$router.push('home')
+      this.active = 0
+    } else if(this.$route.path == '/home') {
+      this.active = 0
+    } else if(this.$route.path == '/msg') {
+      this.active = 1
+    } else if(this.$route.path == '/my') {
+      this.active = 2
+    } 
   },
   methods: {
     tabbar: function() {
@@ -30,6 +42,8 @@ export default {
           break
       }
     }
+  },
+  computed: {
   }
 }
 </script>

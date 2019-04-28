@@ -17,13 +17,13 @@
       </van-cell>
     </div>
     <div class="mbtm20">
-      <van-cell value="" icon="user-o" is-link>
+      <van-cell value="" icon="user-o" is-link to="/account/userinfo">
         <template slot="title">
           <span class="custom-text">个人信息</span>
           <!-- <van-tag type="danger">标签</van-tag> -->
         </template>
       </van-cell>
-      <van-cell value="" icon="setting-o" is-link>
+      <van-cell value="" icon="setting-o" is-link to="/account/setting">
         <template slot="title">
           <span class="custom-text">账号设置</span>
           <!-- <van-tag type="danger">标签</van-tag> -->

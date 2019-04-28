@@ -67,6 +67,11 @@ export default new Router({
       path: '/account/userinfo',
       name: 'userinfo',
       component: () => import('./views/account/userinfo.vue')
+    },
+    {
+      path: '/account/reset-password',
+      name: 'reset-password',
+      component: () => import('./views/account/resetPw.vue')
     }
   ]
 })
