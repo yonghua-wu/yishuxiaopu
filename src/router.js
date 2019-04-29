@@ -45,6 +45,11 @@ export default new Router({
       name: 'list',
       component: () => import('./views/browse/list.vue')
     },
+    {
+      path: '/browse/details',
+      name: 'details',
+      component: () => import('./views/browse/details.vue')
+    },
 
     
     // account area
