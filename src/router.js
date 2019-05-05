@@ -46,7 +46,7 @@ export default new Router({
       component: () => import('./views/browse/list.vue')
     },
     {
-      path: '/browse/details',
+      path: '/browse/details/:id',
       name: 'details',
       component: () => import('./views/browse/details.vue')
     },

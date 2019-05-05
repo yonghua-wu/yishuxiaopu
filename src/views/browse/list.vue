@@ -2,7 +2,7 @@
   <div>
     <div class="main">
       <filter-bar class="top-bar" />
-      <book-list class="list" />
+      <book-list class="list" :list="list" @touch-item="$router.push('/browse/details/' + $event)"/>
     </div>
   </div>
 </template>
@@ -13,6 +13,27 @@ export default {
   components: {
     'book-list': BookList,
     'filter-bar': FilterBar
+  },
+  data: function() {
+    return {
+      list: [
+        {
+          id: 1,
+          img: '/img/img.a6d8a49c.jpg',
+          name: '书名',
+          views: 1,
+          create_time: '3分钟前',
+        },{
+          id: 2,
+          img: '/img/img.a6d8a49c.jpg',
+          name: '书名',
+          views: 1,
+          create_time: '3分钟前',
+        },
+      ]
+    }
+  },
+  methods: {
   }
 }
 </script>

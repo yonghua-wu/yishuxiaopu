@@ -9,14 +9,14 @@
       <div class="title">书籍分类</div>
       <van-row type="flex" justify="center">
         <van-col span="6" class="item">小说</van-col>
-        <van-col span="6" class="item">历史</van-col>
-        <van-col span="6" class="item">推理</van-col>
-        <van-col span="6" class="item">旅行</van-col>
+        <van-col span="6" class="item">艺术</van-col>
+        <van-col span="6" class="item">哲学</van-col>
+        <van-col span="6" class="item">美食</van-col>
       </van-row>
       <van-row type="flex" justify="center">
-        <van-col span="6" class="item">传记</van-col>
-        <van-col span="6" class="item">励志</van-col>
-        <van-col span="6" class="item" id="tool">工具</van-col>
+        <van-col span="6" class="item">旅行</van-col>
+        <van-col span="6" class="item">科技</van-col>
+        <van-col span="6" class="item" id="tool">教育</van-col>
         <van-col span="6" class="item" id="more">更多</van-col>
       </van-row>
     </div>

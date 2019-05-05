@@ -2,17 +2,13 @@
   <div class="list">
     <book-item
       class="item"
-      :imgUrl="'/img/img.a6d8a49c.jpg'"
-      :bookName="'书名'"
-      :pageViews="1"
-      :createTime="'3分钟前'"
-    />
-    <book-item
-      class="item"
-      :imgUrl="'/img/img.a6d8a49c.jpg'"
-      :bookName="'书名'"
-      :pageViews="1"
-      :createTime="'3分钟前'"
+      v-for="(item, index) in list"
+      :key="index"
+      :imgUrl="item.img"
+      :bookName="item.name"
+      :pageViews="item.views"
+      :createTime="item.create_time"
+      @click.native="$emit('touch-item', item.id)"
     />
     <van-col class="item">
       <div class="no-more">没有更多了</div>
@@ -22,9 +18,12 @@
 <script>
 import BookItem from './BookListItem.vue'
 export default {
+  props: {
+    list: Array
+  },
   components: {
     'book-item': BookItem
-  }  
+  }
 }
 </script>
 <style lang="scss" scoped>

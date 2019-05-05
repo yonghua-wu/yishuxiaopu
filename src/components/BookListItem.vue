@@ -54,7 +54,7 @@ export default {
     overflow: hidden;
   }
   .book-info {
-    margin: 0px 10px 8px 10px;
+    padding: 0px 10px 8px 10px;
     color: #888;
     font-size: 12px;
   }

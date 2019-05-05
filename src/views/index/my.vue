@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-row class="userinfo bcfff mbtm20" type="flex" align="center">
+    <van-row class="userinfo bcfff mbtm20" type="flex" align="center" @click.native="$router.push('/account/login')">
       <img src="../../assets/img.jpg" alt="" class="avatar">
       <div class="nickname">昵称</div>
     </van-row>

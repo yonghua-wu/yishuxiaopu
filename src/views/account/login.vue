@@ -1,22 +1,61 @@
 <template>
   <div class="container">
     <div class="logo">易书小铺</div>
-    <div class="input-group">
-      <input type="number" placeholder="请输入手机号" maxlength="11"/>
+    <div class="input-group" :class="{err: errPhone}">
+      <input type="number" placeholder="请输入手机号" maxlength="11" v-model="phone"/>
     </div>
-    <div class="input-group">
-      <input type="password" placeholder="请输入密码" maxlength="16"/>
+    <div class="input-group" :class="{err: errPw}">
+      <input type="password" placeholder="请输入密码" maxlength="16" v-model="password"/>
     </div>
-    <van-button size="large" type="primary">登陆</van-button>
+    <van-button size="large" type="primary" @click="submit">登陆</van-button>
     <div class="footer">
-      <div class="protocol"></div>
+      <div class="protocol" @click="$router.push('/account/register')">去注册</div>
       <div class="reset-pw">找回密码</div>
     </div>
   </div>
 </template>
 <script>
+// import net from '../../utils/net.js'
 export default {
-  
+  data: function () {
+    return {
+      errPhone: false,
+      errPw: false,
+      phone: '',
+      password: ''
+    }
+  },
+  methods: {
+    submit: function () {
+      let pass = true
+      this.errPhone = false
+      this.errPw = false
+      this.errAgaPw = false
+      this.errPin = false
+      if (this.phone.length != 11) {
+        this.$toast('手机号格式有误')
+        this.errPhone = true
+        pass = false
+      } else if (this.password.length < 6 ) {
+        this.$toast('密码格式有误')
+        this.errPw = true
+        pass = false
+      }
+      if (pass) {
+        // eslint-disable-next-line
+        console.log('phone:',this.phone,'password:',this.password)
+        // 发送请求
+        this.$toast.loading({
+          duration: 0,       // 持续展示 toast
+          forbidClick: true, // 禁用背景点击
+          mask: true,
+          message: '加载中...'
+        })
+        setTimeout(()=>{this.$toast.clear()}, 10000)
+        // net.get('http://baidu.com')
+      }
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -51,6 +90,9 @@ export default {
       text-align: center;
     }
   }
+  .err {
+    border: 1px solid #f44;
+  }
   .footer {
     display: flex;
     flex-direction: row;
@@ -58,6 +100,9 @@ export default {
     margin-top: 20px;
     padding: 0px 10px;
     .reset-pw {
+      color: #888;
+    }
+    .protocol {
       color: #888;
     }
   }

@@ -21,7 +21,6 @@
       :actions="[{name: '女'},{name: '男'},{name: '保密'}]"
       cancel-text="取消"
       @select="setGender"
-      
     />
     <van-popup v-model="showSetCity" position="bottom" :overlay="true">
       <van-area :area-list="areaList" :columns-num="2" @confirm="setCity" @cancel="showSetCity = false" title="标题" />

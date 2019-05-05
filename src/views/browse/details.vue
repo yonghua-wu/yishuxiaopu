@@ -27,7 +27,10 @@
 </template>
 <script>
 export default {
-  
+  mounted: function() {
+    // eslint-disable-next-line
+    console.log(this.$route.params.id)
+  }
 }
 </script>
 <style lang="scss" scoped>
