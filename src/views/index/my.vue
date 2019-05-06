@@ -5,7 +5,7 @@
       <div class="nickname">昵称</div>
     </van-row>
     <van-row class="features bcfff mbtm20">
-      <van-col span="12" class="release">发布图书</van-col>
+      <van-col span="12" class="release" @click.native="$router.push('/transaction/add-book')">发布图书</van-col>
       <van-col span="12" class="record">已成交0本</van-col>
     </van-row>
     <div class="mbtm20">

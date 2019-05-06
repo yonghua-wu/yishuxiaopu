@@ -77,6 +77,14 @@ export default new Router({
       path: '/account/reset-password',
       name: 'reset-password',
       component: () => import('./views/account/resetPw.vue')
-    }
+    },
+
+
+    // transaction area
+    {
+      path: '/transaction/add-book',
+      name: 'add-book',
+      component: () => import('./views/transaction/addBook.vue')
+    },
   ]
 })
