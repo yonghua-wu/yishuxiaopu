@@ -86,5 +86,10 @@ export default new Router({
       name: 'add-book',
       component: () => import('./views/transaction/addBook.vue')
     },
+    {
+      path: '/transaction/record',
+      name: 'record',
+      component: () => import('./views/transaction/record.vue')
+    },
   ]
 })
