@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-// import net from '../../utils/net.js'
+import net from '../../utils/net.js'
 export default {
   data: function () {
     return {
@@ -44,15 +44,27 @@ export default {
       if (pass) {
         // eslint-disable-next-line
         console.log('phone:',this.phone,'password:',this.password)
-        // 发送请求
+        
         this.$toast.loading({
           duration: 0,       // 持续展示 toast
           forbidClick: true, // 禁用背景点击
           mask: true,
           message: '加载中...'
         })
-        setTimeout(()=>{this.$toast.clear()}, 10000)
-        // net.get('http://baidu.com')
+
+        // 发送请求
+        net.post('/auth', {
+          phone: this.phone,
+          password: this.password
+        }).then( res => {
+          // eslint-disable-next-line
+          console.log(res)
+          this.$toast.clear()
+        }).catch( err => {
+          // eslint-disable-next-line
+          console.log(err)
+          this.$toast.clear()
+        })
       }
     }
   }
