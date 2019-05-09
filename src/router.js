@@ -91,5 +91,17 @@ export default new Router({
       name: 'record',
       component: () => import('./views/transaction/record.vue')
     },
+
+    // address area
+    {
+      path: '/address/list',
+      name: 'address-list',
+      component: () => import('./views/address/list.vue')
+    },
+    {
+      path: '/address/edit',
+      name: 'edit-address',
+      component: () => import('./views/address/edit.vue')
+    },
   ]
 })

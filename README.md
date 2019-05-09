@@ -27,3 +27,9 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### cnpm
+
+```shell
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+```
