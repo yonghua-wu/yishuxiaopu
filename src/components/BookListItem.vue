@@ -2,7 +2,7 @@
   <div>
     <van-col class="item">
       <div class="img">
-        <img :src="imgUrl" alt="">
+        <img :src="imgUrl ? imgUrl : '/default_book.png'" alt="">
       </div>
       <div class="book-name">{{bookName}}</div>
       <van-row class="book-info" type="flex" justify="space-between">

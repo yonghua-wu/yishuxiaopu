@@ -5,11 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    indexActive: 0
+    isLogin: false
   },
   mutations: {
-    setIndexActive: function(state, payload) {
-      state.indexActive = payload
+    setLoggin: function(state) {
+      state.isLogin = true
+    },
+    setLoginOut: function (state) {
+      state.isLogin = false
     }
   },
   actions: {

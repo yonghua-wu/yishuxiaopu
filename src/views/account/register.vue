@@ -23,6 +23,7 @@
 </template>
 <script>
 import { setTimeout } from 'timers';
+import net from '../../utils/net.js'
 export default {
   data: function () {
     return {
@@ -74,14 +75,30 @@ export default {
       if (pass) {
         // eslint-disable-next-line
         console.log('phone:',this.phone,'password:',this.password,'againPassword:',this.againPassword,'pin:',this.pin)
-        // 发送请求
+
         this.$toast.loading({
           duration: 0,       // 持续展示 toast
           forbidClick: true, // 禁用背景点击
           mask: true,
-          message: '加载中...'
+          message: '注册中...'
         })
-        setTimeout(()=>{this.$toast.clear()}, 10000)
+        // 发送请求
+        net.post('/users', {
+          phone: this.phone,
+          password: this.password,
+          pin: this.pin
+        }).then( res => {
+          // eslint-disable-next-line
+          console.log(res)
+          this.$toast.clear()
+          this.$toast.success('注册成功')
+          // 后续处理，跳转页面等...
+        }).catch( err => {
+          // eslint-disable-next-line
+          console.log(err)
+          this.$toast.clear()
+          this.$toast.fail('网络异常')
+        })
       }
     },
     getPin: function () {

@@ -19,7 +19,7 @@ export default {
       list: [
         {
           id: 1,
-          img: '/img/img.a6d8a49c.jpg',
+          img: '',
           name: '书名',
           views: 1,
           create_time: '3分钟前',

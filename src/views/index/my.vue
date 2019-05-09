@@ -1,12 +1,12 @@
 <template>
   <div>
     <van-row class="userinfo bcfff mbtm20" type="flex" align="center" @click.native="$router.push('/account/login')">
-      <img src="../../assets/img.jpg" alt="" class="avatar">
-      <div class="nickname">昵称</div>
+      <img :src="head_portrait ? head_portrait : '/default_avatar.png'" alt="" class="avatar">
+      <div class="nickname">{{user_name ? user_name : phone}}</div>
     </van-row>
     <van-row class="features bcfff mbtm20">
       <van-col span="12" class="release" @click.native="$router.push('/transaction/add-book')">发布图书</van-col>
-      <van-col span="12" class="record">已成交0本</van-col>
+      <van-col span="12" class="record">历史交易</van-col>
     </van-row>
     <div class="mbtm20">
       <van-cell value="" icon="location-o" is-link>
@@ -34,7 +34,17 @@
 </template>
 <script>
 export default {
-  
+  data: function () {
+    return {
+      user_name: '昵称',
+      phone: '',
+      gender: '',
+      head_portrait: '',
+      city: '',
+      school: '',
+      identity: ''
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -2,10 +2,10 @@
   <div class="container">
     <div class="logo">易书小铺</div>
     <div class="input-group" :class="{err: errPhone}">
-      <input type="number" placeholder="请输入手机号" maxlength="11" v-model="phone"/>
+      <input type="text" name="username" placeholder="请输入手机号" maxlength="11" v-model="phone"/>
     </div>
     <div class="input-group" :class="{err: errPw}">
-      <input type="password" placeholder="请输入密码" maxlength="16" v-model="password"/>
+      <input type="password" name="password" placeholder="请输入密码" maxlength="16" v-model="password"/>
     </div>
     <van-button size="large" type="primary" @click="submit">登陆</van-button>
     <div class="footer">
@@ -49,7 +49,7 @@ export default {
           duration: 0,       // 持续展示 toast
           forbidClick: true, // 禁用背景点击
           mask: true,
-          message: '加载中...'
+          message: '登陆中...'
         })
 
         // 发送请求
@@ -60,10 +60,13 @@ export default {
           // eslint-disable-next-line
           console.log(res)
           this.$toast.clear()
+          this.$toast.success('登陆成功')
+          // 后续处理，跳转页面等...
         }).catch( err => {
           // eslint-disable-next-line
           console.log(err)
           this.$toast.clear()
+          this.$toast.fail('网络异常')
         })
       }
     }
