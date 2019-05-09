@@ -1,15 +1,15 @@
 <template>
   <div>
-    <van-row class="userinfo bcfff mbtm20" type="flex" align="center" @click.native="$router.push('/account/login')">
-      <img :src="head_portrait ? head_portrait : '/default_avatar.png'" alt="" class="avatar">
-      <div class="nickname">{{user_name ? user_name : phone}}</div>
+    <van-row class="userinfo bcfff mbtm20" type="flex" align="center" @click.native="goLogin">
+      <img :src="userInfo.head_portrait ? userInfo.head_portrait : '/default_avatar.png'" alt="" class="avatar">
+      <div class="nickname">{{userInfo.user_name ? userInfo.user_name : userInfo.phone}}</div>
     </van-row>
     <van-row class="features bcfff mbtm20">
       <van-col span="12" class="release" @click.native="$router.push('/transaction/add-book')">发布图书</van-col>
-      <van-col span="12" class="record">历史交易</van-col>
+      <van-col span="12" class="record" @click.native="$router.push('/transaction/record')">历史交易</van-col>
     </van-row>
     <div class="mbtm20">
-      <van-cell value="" icon="location-o" is-link>
+      <van-cell value="" icon="location-o" is-link to="/address/list">
         <template slot="title">
           <span class="custom-text">地址管理</span>
           <!-- <van-tag type="danger">标签</van-tag> -->
@@ -33,16 +33,31 @@
   </div>
 </template>
 <script>
+import storage from '../../utils/storage.js'
 export default {
   data: function () {
     return {
-      user_name: '昵称',
-      phone: '',
-      gender: '',
-      head_portrait: '',
-      city: '',
-      school: '',
-      identity: ''
+      userInfo: {
+        user_name: '点击登陆',
+        phone: '',
+        gender: '',
+        head_portrait: '',
+        city: '',
+        school: '',
+        identity: ''
+      }
+    }
+  },
+  mounted: function () {
+    if (this.$store.state.isLogin) {
+      this.userInfo = storage.get('userInfo')
+    }
+  },
+  methods: {
+    goLogin: function () {
+      if (!this.$store.state.isLogin) {
+        this.$router.push('/account/login')
+      }
     }
   }
 }
@@ -57,7 +72,7 @@ export default {
     margin-left: 20px;
   }
   .nickname {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     margin-left: 20px;
   }

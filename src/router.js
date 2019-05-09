@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from './store'
 import index from './views/index/index.vue'
 import home from './views/index/home.vue'
 import my from './views/index/my.vue'
 import message from './views/index/message.vue'
+
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: '/',
@@ -105,3 +107,13 @@ export default new Router({
     },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (['home', 'msg', 'my', 'login', 'register', 'classification', 'list', 'details'].indexOf(to.name) == -1 && !store.state.isLogin) {
+    next('/account/login')
+  } else {
+    next()
+  }
+})
+
+export default router
