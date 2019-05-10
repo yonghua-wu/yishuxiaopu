@@ -33,6 +33,7 @@
   </div>
 </template>
 <script>
+import net from '../../utils/net.js'
 import storage from '../../utils/storage.js'
 export default {
   data: function () {
@@ -49,8 +50,17 @@ export default {
     }
   },
   mounted: function () {
-    if (this.$store.state.isLogin) {
-      this.userInfo = storage.get('userInfo')
+    let userinfo = storage.get('userInfo') || ''
+    if (this.$store.state.isLogin && userinfo == '') {
+      net.get('/users').then( res => {
+        // eslint-disable-next-line
+        console.log(res)
+        this.userInfo = res.data.data
+        storage.set('userInfo', res.data.data)
+      }).catch( err => {
+        // eslint-disable-next-line
+        console.log(err)
+      })
     }
   },
   methods: {

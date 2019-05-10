@@ -4,7 +4,7 @@ import storage from './storage'
 
 let http = axios.create({
   baseURL: config.HOST,
-  timeout: 100
+  timeout: 10000
 })
 
 // 请求拦截器
@@ -28,6 +28,9 @@ http.interceptors.request.use(function (req) {
 http.interceptors.response.use(function (res) {
   //eslint-disable-next-line
   console.log('response interceptors: ', res)
+  if (res.data.auth !='' || res.data.auth != null) {
+    storage.set('token', res.data.auth)
+  }
   return res
 }, function (err) {
   //eslint-disable-next-line

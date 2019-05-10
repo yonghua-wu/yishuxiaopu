@@ -109,7 +109,7 @@ let router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (['home', 'msg', 'my', 'login', 'register', 'classification', 'list', 'details'].indexOf(to.name) == -1 && !store.state.isLogin) {
+  if (['index', 'home', 'msg', 'my', 'login', 'register', 'classification', 'list', 'details'].indexOf(to.name) == -1 && !store.state.isLogin) {
     next('/account/login')
   } else {
     next()

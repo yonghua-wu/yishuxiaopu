@@ -15,6 +15,7 @@
   </div>
 </template>
 <script>
+import storage from '../../utils/storage.js'
 import net from '../../utils/net.js'
 export default {
   data: function () {
@@ -60,8 +61,27 @@ export default {
           // eslint-disable-next-line
           console.log(res)
           this.$toast.clear()
-          this.$toast.success('登陆成功')
-          // 后续处理，跳转页面等...
+          switch (res.data.code) {
+            case 200: 
+              storage.del('userInfo')
+              this.$store.commit('setLogged')
+              this.$toast.success('登陆成功')
+              this.$router.go(-1)
+              break
+            case 411: 
+              this.$toast.fail('用户名或密码错误')
+              this.phone = ''
+              this.password = ''
+              break
+            case 418: 
+              this.$toast.fail('用户名或密码错误')
+              this.phone = ''
+              this.password = ''
+              break
+            default: 
+              this.$toast.fail('未知的异常')
+              break
+          }
         }).catch( err => {
           // eslint-disable-next-line
           console.log(err)

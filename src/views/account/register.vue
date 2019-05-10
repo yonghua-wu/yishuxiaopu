@@ -22,7 +22,7 @@
   </div>
 </template>
 <script>
-import { setTimeout } from 'timers';
+import storage from '../../utils/storage.js'
 import net from '../../utils/net.js'
 export default {
   data: function () {
@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     submit: function () {
-      let pass = true
       this.errPhone = false
       this.errPw = false
       this.errAgaPw = false
@@ -58,51 +57,70 @@ export default {
       if (this.phone.length != 11) {
         this.$toast('手机号格式有误')
         this.errPhone = true
-        pass = false
+        return
       } else if (this.password.length < 6 ) {
         this.$toast('密码长度应大于6位')
         this.errPw = true
-        pass = false
+        return
       } else if (this.password != this.againPassword ) {
         this.$toast('两次密码不一致')
         this.errAgaPw = true
-        pass = false
+        return
       } else if (this.pin.length != 6) {
         this.$toast('验证码输入有误')
         this.errPin = true
-        pass = false
+        return
       }
-      if (pass) {
-        // eslint-disable-next-line
-        console.log('phone:',this.phone,'password:',this.password,'againPassword:',this.againPassword,'pin:',this.pin)
+      // eslint-disable-next-line
+      console.log('phone:',this.phone,'password:',this.password,'againPassword:',this.againPassword,'pin:',this.pin)
 
-        this.$toast.loading({
-          duration: 0,       // 持续展示 toast
-          forbidClick: true, // 禁用背景点击
-          mask: true,
-          message: '注册中...'
-        })
-        // 发送请求
-        net.post('/users', {
-          phone: this.phone,
-          password: this.password,
-          pin: this.pin
-        }).then( res => {
-          // eslint-disable-next-line
-          console.log(res)
-          this.$toast.clear()
-          this.$toast.success('注册成功')
-          // 后续处理，跳转页面等...
-        }).catch( err => {
-          // eslint-disable-next-line
-          console.log(err)
-          this.$toast.clear()
-          this.$toast.fail('网络异常')
-        })
-      }
+      this.$toast.loading({
+        duration: 0,       // 持续展示 toast
+        forbidClick: true, // 禁用背景点击
+        mask: true,
+        message: '注册中...'
+      })
+      // 发送请求
+      net.post('/users', {
+        phone: this.phone,
+        password: this.password,
+        pin: this.pin
+      }).then( res => {
+        // eslint-disable-next-line
+        console.log(res)
+        this.$toast.clear()
+        switch (res.data.code) {
+          case 200: 
+            storage.del('userInfo')
+            this.$store.commit('setLogged')
+            this.$toast.success('注册成功')
+            this.$router.go(-2)
+            break
+          case 410: 
+            this.$toast.fail('用户已存在')
+            this.phone = ''
+            this.password = ''
+            break
+          default: 
+            this.$toast.fail('未知的异常')
+            break
+        }
+      }).catch( err => {
+        // eslint-disable-next-line
+        console.log(err)
+        this.$toast.clear()
+        this.$toast.fail('网络异常')
+      })
     },
     getPin: function () {
       if (this.countdown != 0) {
+        this.$toast('请稍后')
+        return
+      }
+      this.errPhone = false
+      if (this.phone.length != 11) {
+        this.$toast('请检查手机号')
+        this.errPhone = true
         return
       }
       this.countdown = 60
@@ -113,6 +131,7 @@ export default {
         setTimeout(decrement, 1000)
       }, 1000)
       // 发送请求获取验证码
+      this.$toast('验证码已发送')
     }
   }
 }
