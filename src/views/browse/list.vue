@@ -9,6 +9,7 @@
 <script>
 import BookList from '../../components/BookList'
 import FilterBar from '../../components/FilterBar'
+import net from '../../utils/net.js'
 export default {
   components: {
     'book-list': BookList,
@@ -16,25 +17,35 @@ export default {
   },
   data: function() {
     return {
-      list: [
-        {
-          id: 1,
-          img: '',
-          name: '书名',
-          views: 1,
-          create_time: '3分钟前',
-        },{
-          id: 2,
-          img: '',
-          name: '书名',
-          views: 1,
-          create_time: '3分钟前',
-        },
-      ]
+      list: []
     }
   },
   mounted: function () {
-    
+    this.$toast.loading({
+      duration: 0,       // 持续展示 toast
+      forbidClick: true, // 禁用背景点击
+      mask: false,
+      message: '加载中...'
+    })
+    switch(this.$route.params.type) {
+      case 'classification':
+        net.get('/books/type', { 
+          params: {
+            type: this.$route.params.value 
+          }
+        }).then( res => {
+          this.list = res.data.data.books
+          this.$toast.clear()
+        }).catch( () => {
+          this.$toast.clear()
+          this.$toast.fail('网络异常')
+        })
+        break
+      case 'seach':
+        break
+      default:
+        this.$router.push('/browse/classification')
+    }
   },
   methods: {
   }

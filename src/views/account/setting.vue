@@ -6,6 +6,7 @@
   </div>
 </template>
 <script>
+import storage from '../../utils/storage.js'
 export default {
   methods: {
     signOut: function() {
@@ -13,7 +14,10 @@ export default {
         title: '退出登陆',
         message: '你真的想退出登陆吗？'
       }).then(() => {
-        // on confirm
+        storage.del('token')
+        storage.del('userInfo')
+        this.$store.commit('setLoginOut')
+        this.$router.go(-1)
       }).catch(() => {
         // on cancel
       });

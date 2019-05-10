@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="seller-bar">
-      <img src="../../assets/img.jpg" alt="">
+      <img :src="bookOfMaster.head_portrait" alt="">
       <div class="userinfo">
-        <div class="nickname">昵称</div>
+        <div class="nickname">{{bookOfMaster.user_name}}</div>
         <div class="other">
-          <div class="identity">学生党</div>
-          <div class="city">郴州</div>
+          <div class="identity">{{bookOfMaster.identity}}</div>
+          <div class="city">{{bookOfMaster.city}}</div>
         </div>
       </div>
       <div class="right">
@@ -14,22 +14,52 @@
       </div>
     </div>
     <div class="book-info">
-      <div class="title">书的名字</div>
-      <div class="discription">描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述</div>
+      <div class="title">{{bookInfo.name}}</div>
+      <div class="discription">{{bookInfo.discription}}</div>
       <div class="imgs">
-        <img src="../../assets/img.jpg" alt="">
-        <img src="../../assets/img.jpg" alt="">
-        <img src="../../assets/img.jpg" alt="">
+        <img :src="bookInfo.img" alt="">
       </div>
-      <div class="time">发布于：5小时前</div>
+      <div class="time">发布于：{{bookInfo.create_time}}</div>
     </div>
   </div>
 </template>
 <script>
+import net from '../../utils/net.js'
 export default {
+  data: function () {
+    return {
+      bookInfo: {
+        name: '----',
+        discription: '----',
+        img: '/default_book.png',
+        create_time: '--'
+      },
+      bookOfMaster: {
+        id: '',
+        user_name: '',
+        gender: '',
+        identity: '',
+        head_portrait: '',
+        city: '',
+        school: '',
+      }
+    }
+  },
   mounted: function() {
-    // eslint-disable-next-line
-    console.log(this.$route.params.id)
+    net.get('/books', {
+      params: {
+        id: this.$route.params.id
+      }
+    }).then( res => {
+      this.bookInfo = res.data.data
+      net.get('/users/id', {
+        params: {
+          id: res.data.data.user_id
+        }
+      }).then( res => {
+        this.bookOfMaster = res.data.data
+      })
+    })
   }
 }
 </script>

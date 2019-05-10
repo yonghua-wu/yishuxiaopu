@@ -5,19 +5,19 @@
       <van-swipe-item class="swipe-item">轮播图</van-swipe-item>
       <van-swipe-item class="swipe-item">轮播图</van-swipe-item>
     </van-swipe>
-    <div class="type-area" @click="more">
+    <div class="type-area">
       <div class="title">书籍分类</div>
       <van-row type="flex" justify="center">
-        <van-col span="6" class="item">小说</van-col>
-        <van-col span="6" class="item">艺术</van-col>
-        <van-col span="6" class="item">哲学</van-col>
-        <van-col span="6" class="item">美食</van-col>
+        <van-col span="6" class="item" @click.native="$router.push('/browse/list/classification/0')">小说</van-col>
+        <van-col span="6" class="item" @click.native="$router.push('/browse/list/classification/2')">艺术</van-col>
+        <van-col span="6" class="item" @click.native="$router.push('/browse/list/classification/4')">哲学</van-col>
+        <van-col span="6" class="item" @click.native="$router.push('/browse/list/classification/6')">美食</van-col>
       </van-row>
       <van-row type="flex" justify="center">
-        <van-col span="6" class="item">旅行</van-col>
-        <van-col span="6" class="item">科技</van-col>
-        <van-col span="6" class="item" id="tool">教育</van-col>
-        <van-col span="6" class="item" id="more">更多</van-col>
+        <van-col span="6" class="item" @click.native="$router.push('/browse/list/classification/8')">旅行</van-col>
+        <van-col span="6" class="item" @click.native="$router.push('/browse/list/classification/10')">科技</van-col>
+        <van-col span="6" class="item" @click.native="$router.push('/browse/list/classification/12')">教育</van-col>
+        <van-col span="6" class="item" @click.native="$router.push('/browse/classification')">更多</van-col>
       </van-row>
     </div>
     <div class="recommend">
@@ -33,16 +33,7 @@ export default {
     'book-list': BookList
   },
   methods: {
-    more: function(e) {
-      // console.log('more',e)
-      switch(e.target.id){
-        case 'more':
-          this.$router.push('/browse/classification')
-          break;
-        default :
-          this.$router.push('/browse/list')
-      }
-    }
+    
   }
 }
 </script>

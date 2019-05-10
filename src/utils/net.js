@@ -28,7 +28,7 @@ http.interceptors.request.use(function (req) {
 http.interceptors.response.use(function (res) {
   //eslint-disable-next-line
   console.log('response interceptors: ', res)
-  if (res.data.auth !='' || res.data.auth != null) {
+  if (res.data.auth != '' && res.data.auth != null && res.data.auth != 'null') {
     storage.set('token', res.data.auth)
   }
   return res

@@ -43,7 +43,7 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/browse/classification.vue')
     },
     {
-      path: '/browse/list',
+      path: '/browse/list/:type/:value',
       name: 'list',
       component: () => import('./views/browse/list.vue')
     },

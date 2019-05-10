@@ -50,17 +50,21 @@ export default {
     }
   },
   mounted: function () {
-    let userinfo = storage.get('userInfo') || ''
-    if (this.$store.state.isLogin && userinfo == '') {
-      net.get('/users').then( res => {
-        // eslint-disable-next-line
-        console.log(res)
-        this.userInfo = res.data.data
-        storage.set('userInfo', res.data.data)
-      }).catch( err => {
-        // eslint-disable-next-line
-        console.log(err)
-      })
+    if (this.$store.state.isLogin) {
+      let userinfo = storage.get('userInfo') || ''
+      if (userinfo == '') {
+        net.get('/users').then( res => {
+          // eslint-disable-next-line
+          console.log(res)
+          this.userInfo = res.data.data
+          storage.set('userInfo', JSON.stringify(res.data.data))
+        }).catch( err => {
+          // eslint-disable-next-line
+          console.log(err)
+        })
+      } else {
+        this.userInfo = JSON.parse(userinfo)
+      }
     }
   },
   methods: {
