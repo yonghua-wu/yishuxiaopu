@@ -33,3 +33,9 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ```shell
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
+
+### git
+
+```shell
+git clone http://xx.xx/xx.git
+```

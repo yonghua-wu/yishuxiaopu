@@ -1,8 +1,8 @@
 <template>
   <div>
     <van-row class="userinfo bcfff mbtm20" type="flex" align="center" @click.native="goLogin">
-      <img :src="userInfo.head_portrait ? userInfo.head_portrait : '/default_avatar.png'" alt="" class="avatar">
-      <div class="nickname">{{userInfo.user_name ? userInfo.user_name : userInfo.phone}}</div>
+      <img :src="userInfo.headPortrait ? userInfo.headPortrait : '/default_avatar.png'" alt="" class="avatar">
+      <div class="nickname">{{userInfo.userName ? userInfo.userName : userInfo.phone}}</div>
     </van-row>
     <van-row class="features bcfff mbtm20">
       <van-col span="12" class="release" @click.native="$router.push('/transaction/add-book')">发布图书</van-col>
@@ -39,10 +39,10 @@ export default {
   data: function () {
     return {
       userInfo: {
-        user_name: '点击登陆',
+        userName: '点击登陆',
         phone: '',
         gender: '',
-        head_portrait: '',
+        headPortrait: '',
         city: '',
         school: '',
         identity: ''
