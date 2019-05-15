@@ -7,7 +7,7 @@
       :imgUrl="item.img"
       :bookName="item.name"
       :pageViews="item.views"
-      :createTime="item.create_time"
+      :createTime="item.createTime"
       @click.native="$emit('touch-item', item.id)"
     />
     <van-col class="item">

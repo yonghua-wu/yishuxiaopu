@@ -1,10 +1,10 @@
 <template>
   <div>
     <van-search value="" placeholder="请输入搜索关键词" />
-    <van-swipe class="swipe" :autoplay="3000" indicator-color="white">
+    <!-- <van-swipe class="swipe" :autoplay="3000" indicator-color="white">
       <van-swipe-item class="swipe-item">轮播图</van-swipe-item>
       <van-swipe-item class="swipe-item">轮播图</van-swipe-item>
-    </van-swipe>
+    </van-swipe> -->
     <div class="type-area">
       <div class="title">书籍分类</div>
       <van-row type="flex" justify="center">

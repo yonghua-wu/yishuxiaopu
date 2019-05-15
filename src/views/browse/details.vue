@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="seller-bar">
-      <img :src="bookOfMaster.head_portrait" alt="">
+      <img :src="bookOfMaster.headPortrait" alt="">
       <div class="userinfo">
-        <div class="nickname">{{bookOfMaster.user_name}}</div>
+        <div class="nickname">{{bookOfMaster.userName}}</div>
         <div class="other">
           <div class="identity">{{bookOfMaster.identity}}</div>
           <div class="city">{{bookOfMaster.city}}</div>
@@ -19,7 +19,7 @@
       <div class="imgs">
         <img :src="bookInfo.img" alt="">
       </div>
-      <div class="time">发布于：{{bookInfo.create_time}}</div>
+      <div class="time">发布于：{{bookInfo.createTime}}</div>
     </div>
   </div>
 </template>
@@ -32,14 +32,14 @@ export default {
         name: '----',
         discription: '----',
         img: '/default_book.png',
-        create_time: '--'
+        createTime: '--'
       },
       bookOfMaster: {
         id: '',
-        user_name: '',
+        userName: '',
         gender: '',
         identity: '',
-        head_portrait: '',
+        headPortrait: '',
         city: '',
         school: '',
       }
@@ -54,7 +54,7 @@ export default {
       this.bookInfo = res.data.data
       net.get('/users/id', {
         params: {
-          id: res.data.data.user_id
+          id: res.data.data.userId
         }
       }).then( res => {
         this.bookOfMaster = res.data.data
