@@ -29,7 +29,7 @@ export default {
     })
     switch(this.$route.params.type) {
       case 'classification':
-        net.get('/books/type', { 
+        net.get('/books/type', {
           params: {
             type: this.$route.params.value 
           }
