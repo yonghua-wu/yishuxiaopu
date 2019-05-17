@@ -1,9 +1,11 @@
 <template>
   <div>
     <div class="title">个人信息</div>
-    <van-cell title="头像" center>
-      <img class="avatar-img" :src="userInfo.headPortrait ? userInfo.headPortrait : '/default_avatar.png'" alt="">
-    </van-cell>
+    <van-uploader class="upload" :after-read="after" :max-size="2097152" @oversize="oversize">
+      <van-cell title="头像" center>
+        <img class="avatar-img" :src="userInfo.headPortrait ? userInfo.headPortrait : '/default_avatar.png'" alt="">
+      </van-cell>
+    </van-uploader>
     <van-cell title="昵称" :value="userInfo.userName" is-link @click="showSetNickname = !showSetNickname" />
     <van-cell title="手机号" :value="userInfo.phone" />
     <van-cell title="性别" :value="userInfo.gender" is-link @click="showSetGender = !showSetGender" />
@@ -91,7 +93,9 @@ export default {
     confirm: function (key, value) {
       // eslint-disable-next-line
       console.log(key, value, typeof(value))
-      this.userInfo[key] = value
+      if (key != 'headPortrait' ) {
+        this.userInfo[key] = value
+      }
       storage.set('userInfo', JSON.stringify(this.userInfo))
       let data = {}
       data[key] = value
@@ -101,6 +105,28 @@ export default {
       }).catch( err => {
         // eslint-disable-next-line
         console.log(err)
+      })
+    },
+    after: function(file) {
+      this.userInfo.headPortrait = file.content
+      let data = new FormData
+      data.append('file', file.file)
+      this.$toast.loading('上传头像中')
+      net.post('/upload', data).then( res => {
+        if (res.data.code == 200) {
+          this.$toast.clear()
+          this.confirm('headPortrait', res.data.data)
+        } else {
+          this.$toast.fail('头像上传失败')
+        }
+      }).catch( () => {
+        this.$toast.fail('头像上传失败')
+      })
+    },
+    oversize: function() {
+      this.$dialog.alert({
+        title: '提示',
+        message: '不能上传大小超过2M的图片'
       })
     }
   }
@@ -120,5 +146,8 @@ input {
   text-align: center;
   width: 100%;
   border: 0px;
+}
+.upload {
+  width: 100%;
 }
 </style>

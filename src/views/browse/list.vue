@@ -31,7 +31,7 @@ export default {
       case 'classification':
         net.get('/books/type', {
           params: {
-            type: this.$route.params.value 
+            type: this.$route.params.value
           }
         }).then( res => {
           this.list = res.data.data.books

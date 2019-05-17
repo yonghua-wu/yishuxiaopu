@@ -70,15 +70,6 @@ export default {
       if (this.uploadImgs.length == 9) {
         this.isUpload = false
       }
-      // let data = new FormData()
-      // data.append('file', file.file)
-      // net.post('/upload', data).then( res => {
-      //   // eslint-disable-next-line
-      //   console.log(res)
-      // }).catch( err => {
-      //   // eslint-disable-next-line
-      //   console.log(err)
-      // })
     },
     delSelectedImg: function (index) {
       this.uploadImgs.splice(index, 1)
