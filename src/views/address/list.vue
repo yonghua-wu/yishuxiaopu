@@ -3,35 +3,55 @@
     <van-address-list
       :list="list"
       :switchable="false"
-      @add="$router.push('/address/add')"
+      @add="$router.push('/address/edit')"
       @edit="onEdit"
     />
   </div>
 </template>
 <script>
+import net from '../../utils/net'
 export default {
   data: function () {
     return {
-      list: [
-        {
-          id: '1',
-          name: '张三',
-          tel: '13000000000',
-          address: '浙江省杭州市西湖区文三路 138 号东方通信大厦 7 楼 501 室'
-        },
-        {
-          id: '2',
-          name: '李四',
-          tel: '1310000000',
-          address: '浙江省杭州市拱墅区莫干山路 50 号'
-        }
-      ]
+      list: []
     }
   },
+  mounted: function () {
+    this.getAllAddr()
+  },
   methods: {
+    getAllAddr: function() {
+      net.get('/addreses').then( res => {
+        if (res.data.code == 200) {
+          let addreses = res.data.data.addreses
+          for (let i=0; i<addreses.length; i++) {
+            this.list.push({
+              id: addreses[i].id,
+              name: addreses[i].receiver,
+              tel: addreses[i].receiverTel,
+              address: addreses[i].province + addreses[i].city + addreses[i].area + addreses[i].detailedAddress,
+              areaCode: addreses[i].zipCode,
+              addressDetail: addreses[i].detailedAddress
+            })
+          }
+        } else {
+          this.$toast.fail('网络异常')
+        }
+      }).catch( () => {
+        this.$toast.fail('网络异常')
+      })
+    },
     onEdit: function (e) {
-      // eslint-disable-next-line
-      console.log(e)
+      this.$router.push({
+        path: '/address/edit',
+        query: {
+          id: e.id,
+          name: e.name,
+          tel: e.tel,
+          areaCode: e.areaCode,
+          addressDetail: e.addressDetail
+        } 
+      })
     }
   }
 }
