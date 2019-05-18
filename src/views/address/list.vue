@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     getAllAddr: function() {
-      net.get('/addreses').then( res => {
+      net.get('/addresses').then( res => {
         if (res.data.code == 200) {
           let addreses = res.data.data.addreses
           for (let i=0; i<addreses.length; i++) {

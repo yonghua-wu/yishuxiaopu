@@ -46,7 +46,7 @@ export default {
       }
       if (this.isEdit) {
         data.id = this.$route.query.id
-        net.patch('/addreses', data).then( res => {
+        net.patch('/addresses', data).then( res => {
           if (res.data.code == 200) {
             this.$toast.success('修改成功')
             this.$router.go(-1)
@@ -57,7 +57,7 @@ export default {
           this.$toast.fail('网络异常')
         })
       } else {
-        net.post('/addreses', data).then( res => {
+        net.post('/addresses', data).then( res => {
           if (res.data.code == 200) {
             this.$toast.success('已添加')
             this.$router.go(-1)
@@ -71,7 +71,7 @@ export default {
     },
     onDelete() {
       if (this.$route.query.id) {
-        net.delete('/addreses',{
+        net.delete('/addresses',{
           params: {
             id: this.$route.query.id
           }
