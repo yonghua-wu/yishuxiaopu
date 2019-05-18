@@ -23,15 +23,15 @@ export default {
     getAllAddr: function() {
       net.get('/addresses').then( res => {
         if (res.data.code == 200) {
-          let addreses = res.data.data.addreses
-          for (let i=0; i<addreses.length; i++) {
+          let addresses = res.data.data.addresses
+          for (let i=0; i<addresses.length; i++) {
             this.list.push({
-              id: addreses[i].id,
-              name: addreses[i].receiver,
-              tel: addreses[i].receiverTel,
-              address: addreses[i].province + addreses[i].city + addreses[i].area + addreses[i].detailedAddress,
-              areaCode: addreses[i].zipCode,
-              addressDetail: addreses[i].detailedAddress
+              id: addresses[i].id,
+              name: addresses[i].receiver,
+              tel: addresses[i].receiverTel,
+              address: addresses[i].province + addresses[i].city + addresses[i].area + addresses[i].detailedAddress,
+              areaCode: addresses[i].zipCode,
+              addressDetail: addresses[i].detailedAddress
             })
           }
         } else {
