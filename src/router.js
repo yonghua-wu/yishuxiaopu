@@ -105,6 +105,13 @@ let router = new Router({
       name: 'edit-address',
       component: () => import('./views/address/edit.vue')
     },
+
+    // message area
+    {
+      path: '/msg/chat',
+      name: 'chat',
+      component: () => import('./views/message/chat.vue')
+    }
   ]
 })
 

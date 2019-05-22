@@ -23,7 +23,7 @@ export default {
     getAllAddr: function() {
       net.get('/addresses').then( res => {
         if (res.data.code == 200) {
-          let addresses = res.data.data.addresses
+          let addresses = res.data.data
           for (let i=0; i<addresses.length; i++) {
             this.list.push({
               id: addresses[i].id,
