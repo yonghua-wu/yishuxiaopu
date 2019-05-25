@@ -34,6 +34,7 @@ export default {
     height: 0;
     padding-top: 100%; // 让图片高度等于宽度
     position: relative;
+    overflow: hidden;
     img {
       border-top-left-radius: 8px;
       border-top-right-radius: 8px;
@@ -41,7 +42,6 @@ export default {
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
     }
   }
   .book-name {

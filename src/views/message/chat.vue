@@ -3,12 +3,34 @@
     <div class="log-area">
       <a-message />
     </div>
-    <div class="control-area">
-      <div class="transaction">发起易书</div>
-      <div class="msg">
-        <input class="input" type="text" name="" id="">
-        <input class="btn" type="button" value="发送">
+    <div class="transaction">
+      <div class="initiate" hidden>发起易书</div>
+      <div class="in-transaction">
+        <div class="title">对方向你发起易书</div>
+        <div class="books">
+          <div class="book">
+            <div class="img">
+              <img src="/default_book.png" alt="">
+            </div>
+            <div class="name">名字名字名</div>
+          </div>
+          <img src="/arow.png" alt="" class="arow">
+          <div class="book">
+            <div class="img">
+              <img src="/long.png" alt="">
+            </div>
+            <div class="name">名字</div>
+          </div>
+        </div>
+        <div class="buttons">
+          <input type="button" value="拒绝">
+          <input type="button" value="同意">
+        </div>
       </div>
+    </div>
+    <div class="msg">
+      <input class="input" type="text" name="" id="">
+      <input class="btn" type="button" value="发送">
     </div>
   </div>
 </template>
@@ -24,49 +46,128 @@ export default {
 .log-area {
   margin: 15px 15px 60px 15px;
 }
-.control-area {
+
+.transaction {
   position: fixed;
-  bottom: 0px;
-  height: 90px;
+  bottom: 60px;
   width: 100%;
-  background-color: #fff;
-  .transaction {
-    width: 100%;
-    height: 40%;
+  font-size: 16px;
+  .initiate {  
     color: #fff;
     background-color: #07c160;
-    font-size: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .msg {
-    box-sizing: border-box;
+    height: 40px;
     width: 100%;
-    height: 60%;
-    padding-left: 15px;
-    padding-right: 15px;
+    line-height: 40px;
+    text-align: center;
+  }
+  .in-transaction {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    .input {
-      flex: 1;
-      border: 0px;
-      border-radius: 6px;
-      height: 60%;
-      margin-right: 10px;
-      padding-left: 5px;
-      padding-right: 5px;
-      background-color: #f0f0f0;
-    }
-    .btn {
-      height: 60%;
-      width: 50px;
-      border: 0px;
-      border-radius: 6px;
+    flex-direction: column;
+    .title {
       color: #fff;
-      background-color: #f44;
+      background-color: #07c160;
+      height: 40px;
+      width: 100%;
+      line-height: 40px;
+      text-align: center;
     }
+    .books {
+      padding-top: 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      .book {
+        align-self: flex-start;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        .img {
+          height: 0;
+          width: 120px;
+          padding-top: 120px;
+          overflow: hidden;
+          background-color: #fff;
+          border-radius: 15px;
+          position: relative;
+          img {
+            position: absolute;
+            border-radius: 15px;
+            top: 0;
+            left: 0;
+            width: 100%;
+          }
+        }
+        .name {
+          width: 120px;
+          padding-top: 10px;
+          text-align: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display:-webkit-box; //作为弹性伸缩盒子模型显示。
+          -webkit-box-orient:vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
+          -webkit-line-clamp:2; //显示的行
+        }
+      }
+      .arow {
+        width: 40px;
+        height: 40px;
+      }
+    }
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      padding: 15px 15px 10px 15px;
+      input {
+        padding: 0px;
+        border: 0px;
+        height: 40px;
+        line-height: 40px;
+        width: 50%;
+        color: #fff;
+        background-color: #aaa;
+        &:nth-child(1) {
+          border-top-left-radius: 6px;
+          border-bottom-left-radius: 6px;
+        }
+        &:nth-child(2) {
+          border-top-right-radius: 6px;
+          border-bottom-right-radius: 6px;
+          background-color: #07c160;
+        }
+      }
+    }
+  }
+}
+.msg {
+  position: fixed;
+  bottom: 0px;
+  background-color: #fff;
+  box-sizing: border-box;
+  width: 100%;
+  height: 60px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .input {
+    flex: 1;
+    border: 0px;
+    border-radius: 6px;
+    height: 35px;
+    margin-right: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #f0f0f0;
+  }
+  .btn {
+    height: 35px;
+    width: 50px;
+    border: 0px;
+    border-radius: 6px;
+    color: #fff;
+    background-color: #f44;
   }
 }
 </style>
