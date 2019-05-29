@@ -4,9 +4,9 @@
       <a-message />
     </div>
     <div class="transaction">
-      <div class="initiate" hidden>发起易书</div>
-      <div class="in-transaction">
-        <div class="title">对方向你发起易书</div>
+      <div class="initiate" v-if="stage==0">发起易书</div>
+      <div class="in-transaction" v-if="stage==1">
+        <div class="title">对方向你发起易书，请确认</div>
         <div class="books">
           <div class="book">
             <div class="img">
@@ -27,6 +27,16 @@
           <input type="button" value="同意">
         </div>
       </div>
+      <div class="address" v-if="stage==2">
+        <div class="title">邮寄地址</div>
+        <div class="content">
+          <div class="name-tel">
+            <div class="name">名字</div>
+            <div class="tel">12312312323</div>
+          </div>
+          <div class="detail">详细地址</div>
+        </div>
+      </div>
     </div>
     <div class="msg">
       <input class="input" type="text" name="" id="">
@@ -39,6 +49,14 @@ import AMessage from '../../components/AMessage'
 export default {
   components: {
     'a-message': AMessage
+  },
+  data: function() {
+    return {
+      stage: 0
+    }
+  },
+  mounted: function() {
+    // this.$store.dispatch('addMsg', {abc: '123'})
   }
 }
 </script>
@@ -136,6 +154,37 @@ export default {
           background-color: #07c160;
         }
       }
+    }
+  }
+  .address {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    .title {
+      color: #fff;
+      background-color: #07c160;
+      height: 40px;
+      width: 100%;
+      line-height: 40px;
+      text-align: center;
+    }
+    .name-tel {
+      padding: 20px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .name {
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .tel {
+
+      }
+    }
+    .detail {
+      padding: 0px 20px 20px 20px;
     }
   }
 }
