@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="log-area">
-      <a-message />
+      <a-message v-for="(item, index) in msg.msgLog" :key="index" :sender="item.sender" :time="item.sendTime" :msg="item.msg" :avatar="item.sendTime=='myself' ? userInfo.headPortrait : msg.avatar"/>
     </div>
     <div class="transaction">
-      <div class="initiate" v-if="stage==0">发起易书</div>
-      <div class="in-transaction" v-if="stage==1">
+      <div class="initiate" v-if="msg.stage==0">发起易书</div>
+      <div class="in-transaction" v-if="msg.stage==1">
         <div class="title">对方向你发起易书，请确认</div>
         <div class="books">
           <div class="book">
@@ -27,7 +27,7 @@
           <input type="button" value="同意">
         </div>
       </div>
-      <div class="address" v-if="stage==2">
+      <div class="address" v-if="msg.stage==2">
         <div class="title">邮寄地址</div>
         <div class="content">
           <div class="name-tel">
@@ -45,6 +45,7 @@
   </div>
 </template>
 <script>
+import storage from '../../utils/storage.js'
 import AMessage from '../../components/AMessage'
 export default {
   components: {
@@ -52,11 +53,33 @@ export default {
   },
   data: function() {
     return {
-      stage: 0
+      stage: 0, // 交易进度
+      userInfo: {}
     }
   },
   mounted: function() {
     // this.$store.dispatch('addMsg', {abc: '123'})
+    this.userInfo = JSON.parse(storage.get('userInfo'))
+  },
+  computed: {
+    msg: function() {
+      for(let i=0; i<this.$store.state.msg.length; i++) {
+        if (this.$store.state.msg[i].otherSideId == this.$route.query.id) {
+          return this.$store.state.msg[i]
+        }
+      }
+      return {
+        otherSideId: this.$route.id,
+        avatar: '',
+        nickname: '',
+        count: 0,
+        stage: 0,
+        msgLog: []
+      }
+    },
+    msgLog: function () {
+
+    }
   }
 }
 </script>

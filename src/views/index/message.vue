@@ -1,22 +1,26 @@
 <template>
   <div>
-    <div class="item">
+    <div class="item" v-for="item in msgList" v-bind:key="item.otherSideId" @click="$router.push('/msg/chat?id='+item.otherSideId)">
       <div class="header">
-        <img src="/default_avatar.png" alt="">
+        <img :src="item.avatar ? item.avatar : '/default_avatar.png'" alt="">
       </div>
       <div class="content">
         <div class="msg">
-          <div class="nickname">昵称</div>
-          <div class="text">消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息</div>
+          <div class="nickname">{{item.nickname ? item.nickname : '----'}}</div>
+          <div class="text">{{item.msgLog[item.msgLog.length-1].msg}}</div>
         </div>
-        <van-tag class="tag" round type="danger">3</van-tag>
+        <van-tag class="tag" round type="danger">{{item.count}}</van-tag>
       </div>
     </div>
   </div>
 </template>
 <script>
 export default {
-  
+  computed: {
+    msgList: function() {
+      return this.$store.state.msg
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

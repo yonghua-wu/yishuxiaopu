@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="msg l-msg">
-      <img src="/default_avatar.png" alt="" class="avatar">
+    <div class="msg" :class="['msg', sender=='myself' ? 'r-msg' : 'l-msg']">
+      <img :src="avatar ? avatar : '/default_avatar.png'" alt="" class="avatar">
       <div class="content">
         <div>
-          <div class="time">11:20</div>
+          <div class="time">{{time}}</div>
         </div>
         <div>
-          <div class="text">123,446.123446.12446.12446.12446.12446.12446.12446.12446.12446.12</div>
+          <div class="text">{{msg}}</div>
         </div>
       </div>
     </div>
@@ -15,7 +15,12 @@
 </template>
 <script>
 export default {
-  
+  props: {
+    sender: String,
+    time: String,
+    msg: String,
+    avatar: String,
+  }
 }
 </script>
 <style lang="scss" scoped>
