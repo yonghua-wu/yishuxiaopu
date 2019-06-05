@@ -13,14 +13,9 @@ export default {
       sendTime: "2019-05-25 13:30:19",
       type: "text",
       msg: "123",
-      sender: "otherSide"
-    })
-    this.$store.dispatch('addMsg', {
-      otherSideId: 10,
-      sendTime: "2019-05-25 13:30:19",
-      type: "text",
-      msg: "456",
-      sender: "myself"
+      sender: "otherSide",
+      booksHost: true,
+      bookId: 233
     })
     let that = this
     let tipsErr = true
@@ -36,6 +31,7 @@ export default {
           for (let i=0, payload; i<res.data.data.length; i++) {
             payload = res.data.data[i]
             payload.sender = 'otherSide'
+            payload.booksHost = true
             that.$store.dispatch('addMsg', payload)
           }
         } else {

@@ -48,6 +48,8 @@ export default new Vuex.Store({
           nickname: '',  // 昵称
           count: 1,  // 未读消息数
           stage: 0,  // 交易状态（0：未发起交易，1发起交易还未确认，2确认交易）
+          booksHost: payload.booksHost, // 当前用户是否为书主
+          bookId: payload.bookId, // sender看中的图书
           msgLog: [  // 聊天记录
             {
               sendTime: payload.sendTime,  //消息发送的时间

@@ -1,3 +1,3 @@
 export default {
-  HOST: 'http://192.168.1.103:3000/api/v1'
+  HOST: 'http://192.168.1.104:3000/api/v1'
 }
