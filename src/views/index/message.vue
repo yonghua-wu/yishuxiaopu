@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="item" v-for="item in msgList" v-bind:key="item.otherSideId" @click="$router.push('/msg/chat?id='+item.otherSideId)">
+    <div class="item" v-for="(item, index) in msgList" v-bind:key="item.otherSideId" @click="$router.push('/msg/chat?id='+item.otherSideId)">
       <div class="header">
         <img :src="item.avatar ? item.avatar : '/default_avatar.png'" alt="">
       </div>
       <div class="content">
         <div class="msg">
           <div class="nickname">{{item.nickname ? item.nickname : '----'}}</div>
-          <div class="text">{{item.msgLog[item.msgLog.length-1].msg}}</div>
+          <div class="text">{{text(index)}}</div>
         </div>
         <van-tag class="tag" round type="danger">{{item.count}}</van-tag>
       </div>
@@ -19,6 +19,20 @@ export default {
   computed: {
     msgList: function() {
       return this.$store.state.msg
+    }
+  },
+  methods: {
+    text: function(index) {
+      if (this.msgList[index].msgLog.length == 0) {
+        return ' '
+      } else {
+        for (let i=this.msgList[i].msgLog.length-1; i>=0; i--) {
+          if (this.msgList[index].msgLog[i].type == 'text') {
+            return this.msgList[index].msgLog[i].msg
+          }
+        }
+        return ' '
+      }
     }
   }
 }
@@ -65,9 +79,6 @@ export default {
         white-space:nowrap;
         width: 100%;
       }
-    }
-    .tag {
-      height: 18px;
     }
   }
 }

@@ -34,47 +34,36 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    createMsg: function (context, payload) {
+      let aMsg = {  //创建一条新的记录
+        otherSideId: payload.otherSideId,  //对方的id
+        avatar: '',  // 头像
+        nickname: '',  // 昵称
+        count: 1,  // 未读消息数
+        stage: 0,  // 交易状态（0：未发起交易，1发起交易还未确认，2确认交易）
+        booksHost: payload.booksHost, // 当前用户是否为书主
+        bookId: payload.bookId, // sender看中的图书
+        msgLog: []
+      }
+      context.commit('setNewMsg', aMsg) // 先提交基本信息，再请求头像、昵称信息。保证相同的id不插入多条消息
+      net.get('/users/id?id=' + payload.otherSideId).then( res => {
+        if (res.data.code == 200) {
+          let info = {
+            otherSideId: aMsg.otherSideId,
+            avatar: res.data.data.headPortrait,
+            nickname: res.data.data.userName
+          }
+          context.commit('setNewMsgNameAvatar', info)
+        }
+      })
+    },
     addMsg: function (context, payload) {
       let i=0
       for (; i<context.state.msg.length; i++) {
         if (context.state.msg[i].otherSideId == payload.otherSideId) {
-          break;
+          payload.index = i
+          context.commit('setMsg', payload)
         }
-      }
-      if (i >= context.state.msg.length) { //当缓存中没有对方的id时
-        let aMsg = {  //创建一条新的记录
-          otherSideId: payload.otherSideId,  //对方的id
-          avatar: '',  // 头像
-          nickname: '',  // 昵称
-          count: 1,  // 未读消息数
-          stage: 0,  // 交易状态（0：未发起交易，1发起交易还未确认，2确认交易）
-          booksHost: payload.booksHost, // 当前用户是否为书主
-          bookId: payload.bookId, // sender看中的图书
-          msgLog: [  // 聊天记录
-            {
-              sendTime: payload.sendTime,  //消息发送的时间
-              type: payload.type,  // 消息类型
-              msg: payload.msg,  // 消息体
-              sender: payload.sender  // 发送者 otherSide myself
-            }
-          ]
-        }
-        context.commit('setNewMsg', aMsg) // 先提交基本信息，再请求头像、昵称信息。保证相同的id不插入多条消息
-        net.get('/users/id?id=' + payload.otherSideId).then( res => {
-          if (res.data.code == 200) {
-            aMsg.avatar = res.data.data.headPortrait
-            aMsg.nickname = res.data.data.userName
-            let payload = {
-              otherSideId: aMsg.otherSideId,
-              avatar: res.data.data.headPortrait,
-              nickname: res.data.data.userName
-            }
-            context.commit('setNewMsgNameAvatar', payload)
-          }
-        })
-      } else {  // 当缓存中有记录时
-        payload.index = i
-        context.commit('setMsg', payload)
       }
     }
   }
