@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="seller-bar">
-      <img :src="bookOfMaster.headPortrait" alt="">
+      <img :src="bookOfMaster.headPortrait?bookOfMaster.headPortrait:'/default_avatar.png'" alt="">
       <div class="userinfo">
-        <div class="nickname">{{bookOfMaster.userName}}</div>
+        <div class="nickname">{{bookOfMaster.userName?bookOfMaster.userName:'用户'+bookOfMaster.id}}</div>
         <div class="other">
           <div class="identity">{{bookOfMaster.identity}}</div>
           <div class="city">{{bookOfMaster.city}}</div>
@@ -19,12 +19,13 @@
       <div class="imgs">
         <img :src="bookInfo.img" alt="">
       </div>
-      <div class="time">发布于：{{bookInfo.createTime}}</div>
+      <div class="time">发布于：{{humanTime}}</div>
     </div>
   </div>
 </template>
 <script>
 import net from '../../utils/net.js'
+import time from '../../utils/time.js'
 export default {
   data: function () {
     return {
@@ -60,6 +61,11 @@ export default {
         this.bookOfMaster = res.data.data
       })
     })
+  },
+  computed: {
+    humanTime: function () {
+      return time(new Date(this.bookInfo.createTime))
+    }
   }
 }
 </script>

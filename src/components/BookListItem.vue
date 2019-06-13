@@ -6,19 +6,25 @@
       </div>
       <div class="book-name">{{bookName}}</div>
       <van-row class="book-info" type="flex" justify="space-between">
-        <div class="pageviews">浏览：{{pageViews}}</div>
-        <div class="create-time">{{createTime}}</div>
+        <div class="pageviews">浏览：{{pageViews?pageViews:'0'}}</div>
+        <div class="create-time">{{humanTime}}</div>
       </van-row>
     </van-col>
   </div>
 </template>
 <script>
+import time from '../utils/time.js'
 export default {
   props: {
     imgUrl: String,
     bookName: String,
     pageViews: Number,
     createTime: String
+  },
+  computed: {
+    humanTime: function () {
+      return time(new Date(this.createTime))
+    }
   }
 }
 </script>

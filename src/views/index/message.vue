@@ -12,6 +12,7 @@
         <van-tag class="tag" round type="danger">{{item.count}}</van-tag>
       </div>
     </div>
+    <div class="bottomText">暂无更多消息</div>
   </div>
 </template>
 <script>
@@ -81,5 +82,11 @@ export default {
       }
     }
   }
+}
+.bottomText {
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+  padding: 20px 0px 50px 0px;
 }
 </style>

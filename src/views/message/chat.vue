@@ -12,11 +12,11 @@
         <!-- 主动方stage==0 -->
         <div class="initiative-0" v-if="showStage == 'initiative-0'">
           <div class="book-list">
-            <div class="item">
+            <div class="item" v-for="(item, index) in books" :key="index">
               <div class="img">
                 <img src="/default_book.png" alt="">
               </div>
-              <div class="book-title">123</div>
+              <div class="book-title">{{item.name}}</div>
             </div>
           </div>
         </div>
@@ -25,10 +25,10 @@
         <div class="passive-0" v-if="showStage == 'passive-0'">
           <div class="description">
             <div class="text">TA看中了你的</div>
-            <div class="book-title">书名书名书</div>
+            <div class="book-title">{{passiveBook.name}}</div>
           </div>
           <div class="img">
-            <img src="/default_book.png" alt="">
+            <img src="/default_book.png">
           </div>
         </div>
         
@@ -39,14 +39,14 @@
               <div class="img">
                 <img src="/default_book.png" alt="">
               </div>
-              <div class="name">名字名字名</div>
+              <div class="name">{{initiativeBook.name}}</div>
             </div>
             <img src="/arow.png" alt="" class="arow">
             <div class="book">
               <div class="img">
                 <img src="/long.png" alt="">
               </div>
-              <div class="name">名字</div>
+              <div class="name">{{passiveBook.name}}</div>
             </div>
           </div>
         </div>
@@ -58,14 +58,14 @@
               <div class="img">
                 <img src="/default_book.png" alt="">
               </div>
-              <div class="name">名字名字名</div>
+              <div class="name">{{initiativeBook.name}}</div>
             </div>
-            <img src="/arow.png" alt="" class="arow">
+            <img src="/arow.png" class="arow">
             <div class="book">
               <div class="img">
-                <img src="/long.png" alt="">
+                <img src="/default_book.png">
               </div>
-              <div class="name">名字</div>
+              <div class="name">{{passiveBook.name}}</div>
             </div>
           </div>
           <div class="buttons">
@@ -76,26 +76,12 @@
         
         <!-- 双方相同stage==2 -->
         <div class="stage-2" v-if="showStage == 'stage-2'">
-          <div class="item">
+          <div class="item" v-for="(item, index) in addresses" :key="index">
             <div class="name-tel">
-              <div class="name">name</div>
-              <div class="tel">12313123</div>
+              <div class="name">{{item.receiver}}</div>
+              <div class="tel">{{item.receiverTel}}</div>
             </div>
-            <div class="address">sdafhwiof;saf</div>
-          </div>
-          <div class="item">
-            <div class="name-tel">
-              <div class="name">name</div>
-              <div class="tel">12313123</div>
-            </div>
-            <div class="address">sdafhwiof;saf</div>
-          </div>
-          <div class="item">
-            <div class="name-tel">
-              <div class="name">name</div>
-              <div class="tel">12313123</div>
-            </div>
-            <div class="address">sdafhwiof;saf</div>
+            <div class="address">{{item.province + item.city + item.area + item.detailedAddress}}</div>
           </div>
         </div>
       </div>
@@ -157,6 +143,7 @@
 import storage from '../../utils/storage.js'
 import net from '../../utils/net.js'
 import AMessage from '../../components/AMessage'
+import { Promise } from 'q';
 export default {
   components: {
     'a-message': AMessage
@@ -166,7 +153,12 @@ export default {
       userInfo: {}, // 用户信息
       text: '', // 输入框的文字
       btnText: '发送', // 按钮上的文字
-      showContent: true // 是否显示content（操作）区域
+      showContent: true, // 是否显示content（操作）区域
+      books: [],
+      book: {},
+      initiativeBook: null,
+      passiveBook: null,
+      addresses: null
     }
   },
   mounted: function() {
@@ -186,10 +178,34 @@ export default {
       return {}
     },
     stageTitle: function () {
-      return '标题'
+      switch (this.showStage) {
+        case 'initiative-0':
+          this.getBooks()
+          return '发起易书，请选择您的图书'
+        case 'passive-0':
+          this.getPassiveBook()
+          return '等待对方发起易书'
+        case 'initiative-1':
+          return '等待对方确认'
+        case 'passive-1':
+          return '对方发起易书，请确认'
+        case 'stage-2':
+          this.getAddress()
+          return '选择您的地址'
+        default :
+          return ''
+      }
     },
     showStage: function () {
-      return 'stage-2'
+      return 'initiative-0'
+    },
+    // 获取被动方的书籍id
+    getPassiveBookId: function () {
+
+    },
+    // 获取主动方选择的书籍id
+    getInitiativeSelectBookId: function () {
+
     }
   },
   methods: {
@@ -220,8 +236,56 @@ export default {
         })
       }
     },
-    startTransaction: function () {
-
+    getBooks: function () {
+      net.get('/books/user').then( res => {
+        if (res.data.code == 200) {
+          this.books = res.data.data
+        } else {
+          this.$toast('服务器异常')
+        }
+      }).catch( () => {
+        this.$toast('网络异常')
+      })
+    },
+    getPassiveBook: function () {
+      this.getBook(this.getPassiveBookId).then( res => {
+        this.passiveBook = res
+      }).catch( () => {
+        this.passiveBook = null
+      })
+    },
+    getInitiativeBook: function () {
+      this.getBook(this.getInitiativeSelectBookId).then( res => {
+        this.initiativeBook = res
+      }).catch( () => {
+        this.initiativeBook = null
+      })
+    },
+    getBook: function (id) {
+      return new Promise((resolve, reject) => {
+        net.get('/books?id=' + id).then( res => {
+          if (res.data.code == 200) {
+            resolve(res.data.data)
+          } else {
+            this.$toast('服务器异常')
+            reject(null)
+          }
+        }).catch( () => {
+          this.$toast('网络异常')
+          reject(null)
+        })
+      })
+    },
+    getAddress: function () {
+      net.get('addresses').then( res => {
+        if (res.data.code == 200) {
+          this.addresses = res.data.data
+        } else {
+          this.$toast('网络异常')
+        }
+      }).catch( () => {
+        this.$toast('网络异常')
+      })
     }
   }
 }

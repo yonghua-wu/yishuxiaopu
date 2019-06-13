@@ -34,7 +34,7 @@ export default {
             type: this.$route.params.value
           }
         }).then( res => {
-          this.list = res.data.data.books
+          this.list = res.data.data
           this.$toast.clear()
         }).catch( () => {
           this.$toast.clear()
