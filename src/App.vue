@@ -32,7 +32,7 @@ export default {
             payload = {
               otherSideId: res.data.data[i].sendId
             }
-            if (payload.type == 'create') { // 创建消息
+            if (res.data.data[i].type == 'create') { // 创建消息
               payload.bookId = (JSON.parse(res.data.data[i].msg)).bookId
               payload.booksHost = true
               that.$store.dispatch('createMsg', payload)
@@ -50,15 +50,15 @@ export default {
             that.$toast('网络异常')
           }
         }
-        loop = setTimeout(msgLoop, 8000)
+        loop = setTimeout(msgLoop, 15000)
       }).catch( () => {
         if (tipsErr) {
           tipsErr = false
           that.$toast('网络异常')
         }
-        loop = setTimeout(msgLoop, 8000)
+        loop = setTimeout(msgLoop, 15000)
       })
-    }, 8000)
+    }, 15000)
   }
 }
 </script>

@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="right">
-        <van-button type="danger" size="small">我想要</van-button>
+        <van-button type="danger" size="small" @click="toChat">我想要</van-button>
       </div>
     </div>
     <div class="book-info">
@@ -26,6 +26,7 @@
 <script>
 import net from '../../utils/net.js'
 import time from '../../utils/time.js'
+import storage from '../../utils/storage.js'
 export default {
   data: function () {
     return {
@@ -61,10 +62,41 @@ export default {
         this.bookOfMaster = res.data.data
       })
     })
+    this.userInfo = JSON.parse(storage.get('userInfo'))
   },
   computed: {
     humanTime: function () {
       return time(new Date(this.bookInfo.createTime))
+    }
+  },
+  methods: {
+    toChat: function () {
+      if (this.bookInfo.userId == this.userInfo.id) {
+        this.$toast('这是你发布的书')
+        return
+      }
+      let msgBody = {
+        type: 'create',
+        receiveId: this.bookInfo.userId,
+        msg: JSON.stringify({
+          bookId: this.$route.params.id
+        })
+      }
+      net.post('/msg', msgBody).then( res => {
+        if ( res.data.code == 200) {
+          let payload = {
+            bookId: this.$route.params.id,
+            otherSideId: this.bookInfo.userId,
+            booksHost: false
+          }
+          this.$store.dispatch('createMsg', payload)
+          this.$router.push('/msg/chat?id=' + this.bookInfo.userId)
+        } else {
+          this.$toast.fail('服务器异常')
+        }
+      }).catch( () => {
+        this.$toast.fail('网络异常')
+      })
     }
   }
 }

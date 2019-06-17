@@ -12,7 +12,7 @@
         <!-- 主动方stage==0 -->
         <div class="initiative-0" v-if="showStage == 'initiative-0'">
           <div class="book-list">
-            <div class="item" v-for="(item, index) in books" :key="index">
+            <div class="item" v-for="(item, index) in books" :key="index" @click="selectedBook(index)">
               <div class="img">
                 <img src="/default_book.png" alt="">
               </div>
@@ -86,53 +86,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="transaction">
-      <div class="initiate" v-if="msg.stage==0" @click="showSelectBook=true">发起易书</div>
-      <div class="in-transaction" v-if="msg.stage==1">
-        <div class="title">对方向你发起易书，请确认</div>
-        <div class="books">
-          <div class="book">
-            <div class="img">
-              <img src="/default_book.png" alt="">
-            </div>
-            <div class="name">名字名字名</div>
-          </div>
-          <img src="/arow.png" alt="" class="arow">
-          <div class="book">
-            <div class="img">
-              <img src="/long.png" alt="">
-            </div>
-            <div class="name">名字</div>
-          </div>
-        </div>
-        <div class="buttons">
-          <input type="button" value="拒绝">
-          <input type="button" value="同意">
-        </div>
-      </div>
-      <div class="address" v-if="msg.stage==2">
-        <div class="title">邮寄地址</div>
-        <div class="content">
-          <div class="name-tel">
-            <div class="name">名字</div>
-            <div class="tel">12312312323</div>
-          </div>
-          <div class="detail">详细地址</div>
-        </div>
-      </div>
-    </div>
-    <div class="select-book" v-if="showSelectBook" @click="showSelectBook=false">
-      <div class="box" @click.stop="">
-        <div class="header">
-          <div class="title">请选择要交易的图书</div>
-          <van-icon name="cross" class="close-icon" @click="showSelectBook=false"/>
-        </div>
-        <div class="book-list"></div>
-        <div class="arrow"></div>
-        <div class="book-list"></div>
-        <button>完成</button>
-      </div>
-    </div> -->
     <div class="msg">
       <input class="input" type="text" name="" v-model="text" placeholder="输入内容" maxlength="140">
       <input class="btn" type="button" :value="btnText" @click="sendText" :disabled="btnText=='发送中'" :style="btnText=='发送中'?'background-color: #aaa':''">
@@ -197,18 +150,39 @@ export default {
       }
     },
     showStage: function () {
-      return 'initiative-0'
+      if (this.msg.stage == 0 && this.msg.booksHost == false) {
+        return 'initiative-0'
+      } else if (this.msg.stage == 0 && this.msg.booksHost == true) {
+        return 'passive-0'
+      } else if (this.msg.stage == 1 && this.msg.booksHost == false) {
+        return 'initiative-1'
+      } else if (this.msg.stage == 1 && this.msg.booksHost == true) {
+        return 'passive-1'
+      } else if (this.msg.stage == 2) {
+        return 'stage-2'
+      } else {
+        return ''
+      }
     },
     // 获取被动方的书籍id
     getPassiveBookId: function () {
-
+      return this.msg.bookId
     },
     // 获取主动方选择的书籍id
     getInitiativeSelectBookId: function () {
-
+      if (this.showStage != 'passive-1') {
+        return null
+      }
+      for (let i=0; i<this.msg.msgLog.length; i++) {
+        if ( 'bookId' in this.msg.msgLog[i]) {
+          return this.msg.msgLog[i].bookId
+        }
+      }
+      return null
     }
   },
   methods: {
+    // 发送用户输入的消息
     sendText: function () {
       if (this.text) {
         this.btnText = '发送中'
@@ -220,6 +194,7 @@ export default {
           if (res.data.code != 200) {
             this.$toast('发送失败，请检查网络')
           } else {
+            // 发送成功，添加本地消息记录
             this.$store.dispatch('addMsg', {
               otherSideId: this.$route.query.id,
               sendTime: (new Date()).format('yyyy-MM-dd hh:mm:ss'),
@@ -236,6 +211,7 @@ export default {
         })
       }
     },
+    // 获取主动方的所有图书，用于主动方挑选要交易的图书
     getBooks: function () {
       net.get('/books/user').then( res => {
         if (res.data.code == 200) {
@@ -247,6 +223,7 @@ export default {
         this.$toast('网络异常')
       })
     },
+    // 获取被动方的图书信息
     getPassiveBook: function () {
       this.getBook(this.getPassiveBookId).then( res => {
         this.passiveBook = res
@@ -254,6 +231,7 @@ export default {
         this.passiveBook = null
       })
     },
+    // 获取主动方的图书信息
     getInitiativeBook: function () {
       this.getBook(this.getInitiativeSelectBookId).then( res => {
         this.initiativeBook = res
@@ -276,8 +254,9 @@ export default {
         })
       })
     },
+    // 获取自己的地址列表
     getAddress: function () {
-      net.get('addresses').then( res => {
+      net.get('/addresses').then( res => {
         if (res.data.code == 200) {
           this.addresses = res.data.data
         } else {
@@ -285,6 +264,23 @@ export default {
         }
       }).catch( () => {
         this.$toast('网络异常')
+      })
+    },
+    // 主动方选择了要交换的图书
+    selectedBook: function(index) {
+      let msgBody = {
+        type: 'transaction',
+        receiveId: this.$route.query.id,
+        msg: JSON.stringify({
+          stage: 1,
+          bookId: this.books[index].id
+        })
+      }
+      // 发送消息
+      net.post('/msg', msgBody).then( res => {
+        if (res.data.code == 200) {
+
+        }
       })
     }
   }
@@ -514,179 +510,6 @@ export default {
     }
   }
 }
-// .transaction {
-//   position: fixed;
-//   bottom: 60px;
-//   width: 100%;
-//   font-size: 16px;
-//   .initiate {  
-//     color: #fff;
-//     background-color: #07c160;
-//     height: 40px;
-//     width: 100%;
-//     line-height: 40px;
-//     text-align: center;
-//   }
-//   .in-transaction {
-//     display: flex;
-//     flex-direction: column;
-//     .title {
-//       color: #fff;
-//       background-color: #07c160;
-//       height: 40px;
-//       width: 100%;
-//       line-height: 40px;
-//       text-align: center;
-//     }
-//     .books {
-//       padding-top: 10px;
-//       display: flex;
-//       flex-direction: row;
-//       justify-content: space-around;
-//       align-items: center;
-//       .book {
-//         align-self: flex-start;
-//         display: flex;
-//         flex-direction: column;
-//         height: 100%;
-//         .img {
-//           height: 0;
-//           width: 120px;
-//           padding-top: 120px;
-//           overflow: hidden;
-//           background-color: #fff;
-//           border-radius: 15px;
-//           position: relative;
-//           img {
-//             position: absolute;
-//             border-radius: 15px;
-//             top: 0;
-//             left: 0;
-//             width: 100%;
-//           }
-//         }
-//         .name {
-//           width: 120px;
-//           padding-top: 10px;
-//           text-align: center;
-//           overflow: hidden;
-//           text-overflow: ellipsis;
-//           display:-webkit-box; //作为弹性伸缩盒子模型显示。
-//           -webkit-box-orient:vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
-//           -webkit-line-clamp:2; //显示的行
-//         }
-//       }
-//       .arow {
-//         width: 40px;
-//         height: 40px;
-//       }
-//     }
-//     .buttons {
-//       display: flex;
-//       flex-direction: row;
-//       padding: 15px 15px 10px 15px;
-//       input {
-//         padding: 0px;
-//         border: 0px;
-//         height: 40px;
-//         line-height: 40px;
-//         width: 50%;
-//         color: #fff;
-//         background-color: #aaa;
-//         &:nth-child(1) {
-//           border-top-left-radius: 6px;
-//           border-bottom-left-radius: 6px;
-//         }
-//         &:nth-child(2) {
-//           border-top-right-radius: 6px;
-//           border-bottom-right-radius: 6px;
-//           background-color: #07c160;
-//         }
-//       }
-//     }
-//   }
-//   .address {
-//     display: flex;
-//     flex-direction: column;
-//     background-color: #fff;
-//     color: #333;
-//     .title {
-//       color: #fff;
-//       background-color: #07c160;
-//       height: 40px;
-//       width: 100%;
-//       line-height: 40px;
-//       text-align: center;
-//     }
-//     .name-tel {
-//       padding: 20px;
-//       display: flex;
-//       flex-direction: row;
-//       justify-content: space-between;
-//       .name {
-//         font-size: 16px;
-//         font-weight: bold;
-//       }
-//     }
-//     .detail {
-//       padding: 0px 20px 20px 20px;
-//     }
-//   }
-// }
-// .select-book {
-//   z-index: 100;
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   height: 100vh;
-//   width: 100vw;
-//   background-color: rgba(0,0,0,0.4);
-//   overflow-y: auto;
-//   .box {
-//     position: relative;
-//     width: 85%;
-//     height: 80%;
-//     margin: 50px auto;
-//     background-color: #fff;
-//     border-radius: 6px;
-//     box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
-//     overflow: hidden;
-//     .header {
-//       border-bottom: 1px solid #f0f0f0;
-//       height: 50px;
-//       line-height: 50px;
-//       text-align: center;
-//       position: relative;
-//       .title {
-//         font-size: 16px;
-//       }
-//       .close-icon {
-//         position: absolute;
-//         right: 12px;
-//         top: 12px;
-//         font-size: 26px;
-//       }
-//     }
-//     .book-list {
-//       height: 32%;
-//       border: 1px solid #f00;
-//       width: 100%;
-//     }
-//     button {
-//       width: 100%;
-//       height: 50px;
-//       line-height: 50px;
-//       border: 0px;
-//       padding: 0px;
-//       position: absolute;
-//       bottom: 0px;
-//       right: 0px;
-//       font-size: 16px;
-//       color: #fff;
-//       background-color: #07c160;
-//     }
-//   }
-// }
 .msg {
   position: fixed;
   bottom: 0px;
