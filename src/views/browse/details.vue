@@ -16,8 +16,8 @@
     <div class="book-info">
       <div class="title">{{bookInfo.name}}</div>
       <div class="discription">{{bookInfo.discription}}</div>
-      <div class="imgs">
-        <img :src="bookInfo.img" alt="">
+      <div class="imgs" v-for="(item, index) in imgs" :key="index">
+        <img :src="item" alt="">
       </div>
       <div class="time">发布于：{{humanTime}}</div>
     </div>
@@ -27,6 +27,7 @@
 import net from '../../utils/net.js'
 import time from '../../utils/time.js'
 import storage from '../../utils/storage.js'
+import config from '../../utils/config.js'
 export default {
   data: function () {
     return {
@@ -67,6 +68,11 @@ export default {
   computed: {
     humanTime: function () {
       return time(new Date(this.bookInfo.createTime))
+    },
+    imgs: function () {
+      return this.bookInfo.img.split(',').map( item => {
+        return config.STATIC + item
+      })
     }
   },
   methods: {

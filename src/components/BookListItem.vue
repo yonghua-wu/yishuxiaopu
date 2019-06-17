@@ -2,7 +2,7 @@
   <div>
     <van-col class="item">
       <div class="img">
-        <img :src="imgUrl ? imgUrl : '/default_book.png'" alt="">
+        <img :src="img ? img : '/default_book.png'" alt="">
       </div>
       <div class="book-name">{{bookName}}</div>
       <van-row class="book-info" type="flex" justify="space-between">
@@ -14,6 +14,7 @@
 </template>
 <script>
 import time from '../utils/time.js'
+import config from '../utils/config.js'
 export default {
   props: {
     imgUrl: String,
@@ -24,6 +25,9 @@ export default {
   computed: {
     humanTime: function () {
       return time(new Date(this.createTime))
+    },
+    img: function () {
+      return config.STATIC + (this.imgUrl.split(',')[0])
     }
   }
 }

@@ -32,18 +32,32 @@ export default {
     tabbar: function() {
       switch(this.active) {
         case 0:
-          this.$router.push('home')
+          this.$router.replace('home')
           break
         case 1:
-          this.$router.push('msg')
+          this.$router.replace('msg')
           break
         case 2:
-          this.$router.push('my')
+          this.$router.replace('my')
           break
       }
     }
   },
   computed: {
+  },
+  watch: {
+    '$route.path': function () {
+      if(this.$route.path == '/') {
+        this.$router.push('home')
+        this.active = 0
+      } else if(this.$route.path == '/home') {
+        this.active = 0
+      } else if(this.$route.path == '/msg') {
+        this.active = 1
+      } else if(this.$route.path == '/my') {
+        this.active = 2
+      }
+    }
   }
 }
 </script>

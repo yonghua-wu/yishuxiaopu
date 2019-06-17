@@ -109,7 +109,7 @@ export default {
         let process = uploading()
         for(let i=0; i<process.length; i++) {
           let res = await process[i]
-          imgNames.push(res.data.data)
+          imgNames.push(res.data)
         }
         return imgNames
       }
@@ -139,7 +139,7 @@ export default {
           this.$toast.fail('发布失败，网络异常')
         })
       }).catch( () => {
-        this.$toast.fail('图片上传失败，网络异常')
+        this.$toast.fail('上传失败，网络异常')
       })
     },
     oversize: function() {
