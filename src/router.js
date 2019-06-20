@@ -93,6 +93,11 @@ let router = new Router({
       name: 'record',
       component: () => import('./views/transaction/record.vue')
     },
+    {
+      path: '/transaction/edit/:id',
+      name: 'edit-book',
+      component: () => import('./views/transaction/edit.vue')
+    },
 
     // address area
     {

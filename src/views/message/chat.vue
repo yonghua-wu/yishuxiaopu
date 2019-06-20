@@ -215,7 +215,9 @@ export default {
     getBooks: function () {
       net.get('/books/user').then( res => {
         if (res.data.code == 200) {
-          this.books = res.data.data
+          this.books = res.data.data.filter(function (item) {
+            return item.state == 'transaction'
+          })
         } else {
           this.$toast('服务器异常')
         }
