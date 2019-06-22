@@ -61,50 +61,37 @@ export default {
   },
   methods: {
     setNickname: function() {
-      // eslint-disable-next-line
-      console.log(this.newName)
       this.confirm('userName', this.newName)
     },
     setGender: function(e) {
       this.showSetGender = false
-      this.newGender = e.name
-      // eslint-disable-next-line
-      console.log(this.newGender,e)
-      this.confirm('gender', this.newGender)
+      this.confirm('gender', e.name)
     },
     setCity: function(e) {
       this.showSetCity = false
-      if(e[1]) {
-        this.newCity = e[1].name
-      } else {
-        this.newCity = e[0].name
-      }
-      // eslint-disable-next-line
-      console.log(this.newCity,e)
-      this.confirm('city', this.newCity)
+      let city = e[1]?e[1].name:e[0].name
+      this.confirm('city', city)
     },
     setIdentity: function(e) {
       this.showSetIdentity = false
-      this.newIdentity = e.name
-      // eslint-disable-next-line
-      console.log(this.newIdentity,e)
-      this.confirm('identity', this.newIdentity)
+      this.confirm('identity', e.name)
     },
     confirm: function (key, value) {
-      // eslint-disable-next-line
-      console.log(key, value, typeof(value))
-      if (key != 'headPortrait' ) {
-        this.userInfo[key] = value
-      }
-      storage.set('userInfo', JSON.stringify(this.userInfo))
+      this.$toast.loading('修改中')
       let data = {}
       data[key] = value
       net.patch('/users', data).then( res => {
-        // eslint-disable-next-line
-        console.log(res)
-      }).catch( err => {
-        // eslint-disable-next-line
-        console.log(err)
+        if (res.data.code == 200) {
+          if (key != 'headPortrait' ) {
+            this.userInfo[key] = value
+          }
+          storage.set('userInfo', JSON.stringify(this.userInfo))
+          this.$toast.success('修改成功')
+        } else {
+          this.$toast.fail('修改失败')
+        }
+      }).catch( () => {
+        this.$toast.fail('修改失败')
       })
     },
     after: function(file) {
