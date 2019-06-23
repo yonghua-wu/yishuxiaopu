@@ -2,10 +2,10 @@
   <div>
     <van-tabs v-model="active">
       <van-tab title="发布中">
-        <book-list class="list" :list="transaction" @touch-item="$router.push('/transaction/edit/' + $event)"/>
+        <book-list class="list" :list="transactionBooks"/>
       </van-tab>
       <van-tab title="已交易">
-        <book-list class="list" :list="complete" @touch-item="$router.push('/transaction/edit/' + $event)"/>
+        <book-list class="list" :list="completeBooks"/>
       </van-tab>
     </van-tabs>
   </div>
@@ -20,25 +20,26 @@ export default {
   data: function () {
     return {
       active: 0,
-      books: []
-    }
-  },
-  computed: {
-    transaction: function () {
-      return this.books.filter(function (item) {
-        return item.state == 'transaction'
-      })
-    },
-    complete: function () {
-      return this.books.filter(function (item) {
-        return item.state == 'complete'
-      })
+      transactionBooks: [],
+      completeBooks: []
     }
   },
   mounted: function () {
-    net.get('/books/user').then( res => {
+    this.$toast.loading('加载中')
+    net.get('/books/user?state=fail').then( res => {
       if (res.data.code == 200) {
-        this.books = res.data.data
+        this.$toast.clear()
+        this.transactionBooks = res.data.data
+      } else {
+        this.$toast.fail('服务器异常')
+      }
+    }).catch( () => {
+      this.$toast.fail('网络异常')
+    })
+    net.get('/books/user?state=success').then( res => {
+      if (res.data.code == 200) {
+        this.$toast.clear()
+        this.completeBooks = res.data.data
       } else {
         this.$toast.fail('服务器异常')
       }
