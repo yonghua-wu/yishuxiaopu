@@ -7,7 +7,7 @@
       <div class="content">
         <div class="msg">
           <div class="nickname">{{item.nickname ? item.nickname : '----'}}</div>
-          <div class="text">{{text(index)}}</div>
+          <!-- <div class="text">{{text(index)}}</div> -->
         </div>
         <van-tag class="tag" round type="danger">{{item.count}}</van-tag>
       </div>

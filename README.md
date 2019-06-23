@@ -2,7 +2,7 @@
 
 ## 环境准备
 
-- Node.js
+- Nodejs
 - Git
 
 ## 下载项目

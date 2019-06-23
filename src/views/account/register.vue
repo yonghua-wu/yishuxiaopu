@@ -11,7 +11,7 @@
       <input type="password" placeholder="确认密码" maxlength="16" v-model="againPassword"/>
     </div>
     <div class="input-group" :class="{err: errPin}">
-      <input type="number" placeholder="验证码" maxlength="6" v-model="pin"/>
+      <input type="number" placeholder="验证码" maxlength="4" v-model="pin"/>
       <div class="inner-btn" @click="getPin">{{ rightPinText }}</div>
     </div>
     <van-button size="large" type="primary" @click="submit">注册</van-button>
@@ -66,7 +66,7 @@ export default {
         this.$toast('两次密码不一致')
         this.errAgaPw = true
         return
-      } else if (this.pin.length != 6) {
+      } else if (this.pin.length != 4) {
         this.$toast('验证码输入有误')
         this.errPin = true
         return

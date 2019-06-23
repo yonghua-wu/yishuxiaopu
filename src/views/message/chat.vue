@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="log-area">
-      <a-message v-for="(item, index) in msg.msgLog" :key="index" :sender="item.sender" :time="item.sendTime" :msg="item.msg" :avatar="item.sendTime=='myself' ? userInfo.headPortrait : msg.avatar"/>
+      <a-message v-for="(item, index) in chatRecord" :key="index" :sender="item.sender" :time="item.sendTime" :msg="item.msg" :avatar="item.sender=='myself' ? userInfo.headPortrait : msg.avatar"/>
     </div>
     <div class="transaction">
       <div class="title" @click="showContent = !showContent">{{stageTitle}}</div>
@@ -25,7 +25,7 @@
         <div class="passive-0" v-if="showStage == 'passive-0'">
           <div class="description">
             <div class="text">TA看中了你的</div>
-            <div class="book-title">{{passiveBook.name}}</div>
+            <div class="book-title">{{passiveBook?passiveBook.name:'---'}}</div>
           </div>
           <div class="img">
             <img src="/default_book.png">
@@ -39,14 +39,14 @@
               <div class="img">
                 <img src="/default_book.png" alt="">
               </div>
-              <div class="name">{{initiativeBook.name}}</div>
+              <div class="name">{{initiativeBook?initiativeBook.name:'--'}}</div>
             </div>
             <img src="/arow.png" alt="" class="arow">
             <div class="book">
               <div class="img">
                 <img src="/long.png" alt="">
               </div>
-              <div class="name">{{passiveBook.name}}</div>
+              <div class="name">{{passiveBook?passiveBook.name:'---'}}</div>
             </div>
           </div>
         </div>
@@ -58,25 +58,25 @@
               <div class="img">
                 <img src="/default_book.png" alt="">
               </div>
-              <div class="name">{{initiativeBook.name}}</div>
+              <div class="name">{{initiativeBook?initiativeBook.name:'--'}}</div>
             </div>
             <img src="/arow.png" class="arow">
             <div class="book">
               <div class="img">
                 <img src="/default_book.png">
               </div>
-              <div class="name">{{passiveBook.name}}</div>
+              <div class="name">{{passiveBook?passiveBook.name:'---'}}</div>
             </div>
           </div>
           <div class="buttons">
-            <input type="button" value="拒绝">
-            <input type="button" value="同意">
+            <input type="button" value="拒绝" @click="cancel">
+            <input type="button" value="同意" @click="agree">
           </div>
         </div>
         
-        <!-- 双方相同stage==2 -->
-        <div class="stage-2" v-if="showStage == 'stage-2'">
-          <div class="item" v-for="(item, index) in addresses" :key="index">
+        <!-- 双方相同stage==3 -->
+        <div class="stage-3" v-if="showStage == 'stage-3'">
+          <div class="item" v-for="(item, index) in addresses" :key="index" @click="selectedAddr(index)">
             <div class="name-tel">
               <div class="name">{{item.receiver}}</div>
               <div class="tel">{{item.receiverTel}}</div>
@@ -95,8 +95,8 @@
 <script>
 import storage from '../../utils/storage.js'
 import net from '../../utils/net.js'
+import msgCenter from '../../utils/msgProcessCenter.js'
 import AMessage from '../../components/AMessage'
-import { Promise } from 'q';
 export default {
   components: {
     'a-message': AMessage
@@ -121,15 +121,18 @@ export default {
     this.userInfo = JSON.parse(storage.get('userInfo'))
   },
   computed: {
+    // 消息记录
     msg: function() {
-      for(let i=0; i<this.$store.state.msg.length; i++) {
-        if (this.$store.state.msg[i].otherSideId == this.$route.query.id) {
-          return this.$store.state.msg[i]
-        }
-      }
-      this.$router.go(-1)
-      return {}
+      let that = this
+      return this.$store.state.msg.filter(function (item) {
+        return item.otherSideId == that.$route.query.id
+      })[0] || this.$router.go(-1)
     },
+    // 聊天记录，不包括系统消息
+    chatRecord: function () {
+      return this.msg.chatRecord
+    },
+    // 状态转文字描述
     stageTitle: function () {
       switch (this.showStage) {
         case 'initiative-0':
@@ -139,46 +142,35 @@ export default {
           this.getPassiveBook()
           return '等待对方发起易书'
         case 'initiative-1':
+          this.getInitiativeBook()
+          this.getPassiveBook()
           return '等待对方确认'
         case 'passive-1':
+          this.getInitiativeBook()
+          this.getPassiveBook()
           return '对方发起易书，请确认'
-        case 'stage-2':
+        case 'stage-3':
           this.getAddress()
           return '选择您的地址'
         default :
           return ''
       }
     },
+    // 判断状态
     showStage: function () {
-      if (this.msg.stage == 0 && this.msg.booksHost == false) {
+      if (this.msg.stage == 0 && this.msg.bookHost == false) {
         return 'initiative-0'
-      } else if (this.msg.stage == 0 && this.msg.booksHost == true) {
+      } else if (this.msg.stage == 0 && this.msg.bookHost == true) {
         return 'passive-0'
-      } else if (this.msg.stage == 1 && this.msg.booksHost == false) {
+      } else if (this.msg.stage == 1 && this.msg.bookHost == false) {
         return 'initiative-1'
-      } else if (this.msg.stage == 1 && this.msg.booksHost == true) {
+      } else if (this.msg.stage == 1 && this.msg.bookHost == true) {
         return 'passive-1'
-      } else if (this.msg.stage == 2) {
-        return 'stage-2'
+      } else if (this.msg.stage == 3) {
+        return 'stage-3'
       } else {
         return ''
       }
-    },
-    // 获取被动方的书籍id
-    getPassiveBookId: function () {
-      return this.msg.bookId
-    },
-    // 获取主动方选择的书籍id
-    getInitiativeSelectBookId: function () {
-      if (this.showStage != 'passive-1') {
-        return null
-      }
-      for (let i=0; i<this.msg.msgLog.length; i++) {
-        if ( 'bookId' in this.msg.msgLog[i]) {
-          return this.msg.msgLog[i].bookId
-        }
-      }
-      return null
     }
   },
   methods: {
@@ -186,38 +178,23 @@ export default {
     sendText: function () {
       if (this.text) {
         this.btnText = '发送中'
-        net.post('/msg', {
+        msgCenter.sendMsg({
           type: 'text',
           receiveId: this.$route.query.id,
           msg: this.text
-        }).then( res => {
-          if (res.data.code != 200) {
-            this.$toast('发送失败，请检查网络')
-          } else {
-            // 发送成功，添加本地消息记录
-            this.$store.dispatch('addMsg', {
-              otherSideId: this.$route.query.id,
-              sendTime: (new Date()).format('yyyy-MM-dd hh:mm:ss'),
-              type: 'text',
-              msg: this.text,
-              sender: 'myself'
-            })
-            this.text = ''
-          }
+        }).then( () => {
+          this.text = ''
           this.btnText = '发送'
         }).catch( () => {
-          this.$toast('发送失败，请检查网络')
           this.btnText = '发送'
         })
       }
     },
     // 获取主动方的所有图书，用于主动方挑选要交易的图书
     getBooks: function () {
-      net.get('/books/user').then( res => {
+      net.get('/books/user?state=fail').then( res => {
         if (res.data.code == 200) {
-          this.books = res.data.data.filter(function (item) {
-            return item.state == 'transaction'
-          })
+          this.books = res.data.data
         } else {
           this.$toast('服务器异常')
         }
@@ -227,7 +204,7 @@ export default {
     },
     // 获取被动方的图书信息
     getPassiveBook: function () {
-      this.getBook(this.getPassiveBookId).then( res => {
+      this.getBook(this.msg.PBookId).then( res => {
         this.passiveBook = res
       }).catch( () => {
         this.passiveBook = null
@@ -235,7 +212,7 @@ export default {
     },
     // 获取主动方的图书信息
     getInitiativeBook: function () {
-      this.getBook(this.getInitiativeSelectBookId).then( res => {
+      this.getBook(this.msg.IBookId).then( res => {
         this.initiativeBook = res
       }).catch( () => {
         this.initiativeBook = null
@@ -270,18 +247,63 @@ export default {
     },
     // 主动方选择了要交换的图书
     selectedBook: function(index) {
-      let msgBody = {
+      this.$dialog.confirm({
+        title: '确认',
+        message: '是否确认使用《'+this.books[index].name+'》交换？'
+      }).then(() => {
+        msgCenter.sendMsg({
+          type: 'transaction',
+          receiveId: this.$route.query.id,
+          msg: {
+            stage: 1,
+            bookId: this.books[index].id
+          }
+        })
+      }).catch(() => {
+        // on cancel
+      })
+    },
+    selectedAddr: function(index) {
+      let address = this.addresses[index].province + this.addresses[index].city + this.addresses[index].area + this.addresses[index].detailedAddress
+      this.$dialog.confirm({
+        title: '确认',
+        message: '确认使用：' + address
+      }).then(() => {
+        msgCenter.sendMsg({
+          type: 'transaction',
+          receiveId: this.$route.query.id,
+          msg: {
+            stage: 4,
+            address: {
+              receiver: this.addresses[index].receiver,
+              receiverTel: this.addresses[index].receiverTel,
+              address: address
+            }
+          }
+        })
+      }).catch(() => {
+        // on cancel
+      });
+    },
+    //同意交换
+    agree: function() {
+      msgCenter.sendMsg({
         type: 'transaction',
         receiveId: this.$route.query.id,
-        msg: JSON.stringify({
-          stage: 1,
-          bookId: this.books[index].id
-        })
-      }
-      // 发送消息
-      net.post('/msg', msgBody).then( res => {
-        if (res.data.code == 200) {
-
+        msg: {
+          stage: 3
+        }
+      }).then( () => {
+        // 交易接口
+      })
+    },
+    // 拒绝交换
+    cancel: function () {
+      msgCenter.sendMsg({
+        type: 'transaction',
+        receiveId: this.$route.query.id,
+        msg: {
+          stage: 2
         }
       })
     }
@@ -434,7 +456,7 @@ export default {
         }
       }
     }
-    .stage-2 {
+    .stage-3 {
       padding: 15px;
       background-color: #fff;
       height: 120px;

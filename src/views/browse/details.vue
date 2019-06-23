@@ -28,6 +28,7 @@ import net from '../../utils/net.js'
 import time from '../../utils/time.js'
 import storage from '../../utils/storage.js'
 import config from '../../utils/config.js'
+import msgCenter from '../../utils/msgProcessCenter.js'
 export default {
   data: function () {
     return {
@@ -84,22 +85,14 @@ export default {
       let msgBody = {
         type: 'create',
         receiveId: this.bookInfo.userId,
-        msg: JSON.stringify({
+        msg: {
           bookId: this.$route.params.id
-        })
-      }
-      net.post('/msg', msgBody).then( res => {
-        if ( res.data.code == 200) {
-          let payload = {
-            bookId: this.$route.params.id,
-            otherSideId: this.bookInfo.userId,
-            booksHost: false
-          }
-          this.$store.dispatch('createMsg', payload)
-          this.$router.push('/msg/chat?id=' + this.bookInfo.userId)
-        } else {
-          this.$toast.fail('服务器异常')
         }
+      }
+      this.$toast.loading('加载中')
+      msgCenter.sendMsg(msgBody).then( () => {
+        this.$toast.clear()
+        this.$router.push('/msg/chat?id=' + this.bookInfo.userId)
       }).catch( () => {
         this.$toast.fail('网络异常')
       })
