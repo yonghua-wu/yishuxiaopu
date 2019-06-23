@@ -4,7 +4,7 @@
       <img :src="avatar ? avatar : '/default_avatar.png'" alt="" class="avatar">
       <div class="content">
         <div>
-          <div class="time">{{time}}</div>
+          <div class="time">{{humanTime}}</div>
         </div>
         <div>
           <div class="text">{{msg}}</div>
@@ -14,12 +14,18 @@
   </div>
 </template>
 <script>
+import time from '../utils/time.js'
 export default {
   props: {
     sender: String,
     time: String,
     msg: String,
     avatar: String,
+  },
+  computed: {
+    humanTime: function () {
+      return time(new Date(this.time))
+    }
   }
 }
 </script>

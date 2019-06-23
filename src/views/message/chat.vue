@@ -485,9 +485,6 @@ export default {
             font-weight: bold;
             font-size: 16px;
           }
-          .tel {
-
-          }
         }
       }
       .address {
