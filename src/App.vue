@@ -7,9 +7,12 @@
 <script>
 // import net from './utils/net.js'
 import msgLoop from './utils/msgRequestLoop.js'
+import storage from './utils/storage.js'
 export default {
   mounted: function() {
     msgLoop.loop()
+    // 从缓存中恢复消息记录
+    this.$store.commit('loadMsg', JSON.parse(storage.get('msg')))
   }
 }
 </script>
