@@ -192,6 +192,7 @@ export default {
     },
     // 获取主动方的所有图书，用于主动方挑选要交易的图书
     getBooks: function () {
+      this.$toast.loading('加载图书列表')
       net.get('/books/user?state=fail').then( res => {
         if (res.data.code == 200) {
           this.books = res.data.data
@@ -220,6 +221,7 @@ export default {
     },
     getBook: function (id) {
       return new Promise((resolve, reject) => {
+        this.$toast.loading('加载中')
         net.get('/books?id=' + id).then( res => {
           if (res.data.code == 200) {
             resolve(res.data.data)
@@ -235,8 +237,10 @@ export default {
     },
     // 获取自己的地址列表
     getAddress: function () {
+      this.$toast.loading('加载地址中')
       net.get('/addresses').then( res => {
         if (res.data.code == 200) {
+          this.$toast.clear()
           this.addresses = res.data.data
         } else {
           this.$toast('网络异常')

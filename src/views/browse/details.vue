@@ -50,20 +50,34 @@ export default {
     }
   },
   mounted: function() {
+    this.$toast.loading('加载中')
     net.get('/books', {
       params: {
         id: this.$route.params.id
       }
     }).then( res => {
-      this.bookInfo = res.data.data
-      net.get('/users/id', {
-        params: {
-          id: res.data.data.userId
-        }
-      }).then( res => {
-        this.bookOfMaster = res.data.data
+      if (res.data.code == 200) {
+        this.bookInfo = res.data.data
+        net.get('/users/id', {
+          params: {
+            id: res.data.data.userId
+          }
+        }).then( res => {
+          if (res.data.code == 200) {
+            this.$toast.clear()
+            this.bookOfMaster = res.data.data
+          } else {
+            this.$toast.fail('服务器异常')
+          }
+        }).catch( () => {
+          this.$toast.fail('网络异常')
+        })
+      } else {
+        this.$toast.fail('服务器异常')
+      }
+    }).catch( () => {
+        this.$toast.fail('网络异常')
       })
-    })
     this.userInfo = JSON.parse(storage.get('userInfo'))
   },
   computed: {
@@ -79,7 +93,7 @@ export default {
   methods: {
     toChat: function () {
       if (this.bookInfo.userId == this.userInfo.id) {
-        this.$toast('这是你发布的书')
+        this.$toast.fail('这是你发布的书')
         return
       }
       let msgBody = {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="item" v-for="(item, index) in msgList" v-bind:key="item.otherSideId" @click="$router.push('/msg/chat?id='+item.otherSideId)">
+    <div class="item" v-for="(item) in msgList" v-bind:key="item.otherSideId" @click="$router.push('/msg/chat?id='+item.otherSideId)">
       <div class="header">
         <img :src="item.avatar ? item.avatar : '/default_avatar.png'" alt="">
       </div>
