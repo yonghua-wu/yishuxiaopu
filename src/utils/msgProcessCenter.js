@@ -32,18 +32,24 @@ export default {
               stage: 1,
               IBookId: JSON.parse(msg[i].msg).bookId
             })
+            store.commit('setMsgChatRecord', {
+              otherSideId: msg[i].sendId,
+              sender: 'system',
+              sendTime: msg[i].sendTime,
+              msg: '对方选择了与你交易的图书，请尽快处理'
+            })
             break
           case 4:
             addr = JSON.parse(msg[i].msg).address
             store.commit('setMsgAddr', {
               otherSideId: msg[i].sendId,
-              stage: 4,
               addr: addr
             })
             store.commit('setMsgChatRecord', {
+              otherSideId: msg[i].sendId,
               sender: 'otherSide',
               sendTime: msg[i].sendTime,
-              msg: "收件人：${addr.receiver}\n联系方式：${addr.receiverTel}\n地址：${addr.address}"
+              msg: '收件人：' + addr.receiver + '。联系方式：' + addr.receiverTel + '。地址：' + addr.address + '。'
             })
             break
           case 2:
@@ -51,19 +57,39 @@ export default {
                 otherSideId: msg[i].sendId,
                 stage: 0
               })
+              store.commit('setMsgChatRecord', {
+                otherSideId: msg[i].sendId,
+                sender: 'system',
+                sendTime: msg[i].sendTime,
+                msg: '对方拒绝了你的图书，请重新选择'
+              })
               break
           case 3:
             store.commit('setMsgStage', {
               otherSideId: msg[i].sendId,
               stage: stage
             })
+            store.commit('setMsgChatRecord', {
+              otherSideId: msg[i].sendId,
+              sender: 'system',
+              sendTime: msg[i].sendTime,
+              msg: '对方同意交易，请选择你的地址'
+            })
+            for (let i = 0; i<store.state.msg.length; i++) {
+              if (store.state.msg[i].otherSideId == msg[i].sendId) {
+                // 请求交易接口
+                net.post('/trading?bookId='+ store.state.msg[i].IBookId +'&buyId='+ store.state.msg[i].otherSideId)
+                break
+              }
+            }
             break
         }
       } else if (msg[i].type == 'text') {
         let chatRecord = {
+          otherSideId: msg[i].sendId,
           sender: 'otherSide',
           sendTime: msg[i].sendTime,
-          msg: msg[i].msg
+          msg: JSON.parse(msg[i].msg)
         }
         store.commit('setMsgChatRecord', chatRecord)
       }
@@ -80,6 +106,7 @@ export default {
         receiveId: msg.receiveId,
         msg: JSON.stringify(msg.msg)
       }).then( res => {
+        
         if (res.data.code == 200) {
           if (msg.type == 'create') {
             let storeMsg = {
@@ -95,7 +122,15 @@ export default {
               count: 0 // 未读消息数
             }
             store.commit('setMsgRecord', storeMsg)
-            msg.msg = JSON.stringify(msg.msg)
+            net.get('/users/id?id=' + msg.receiveId).then( res => {
+              if (res.data.code == 200) {
+                store.commit('setMsgNameAvatar', {
+                  otherSideId: msg.receiveId,
+                  nickname: res.data.data.userName,
+                  avatar: res.data.data.headPortrait
+                })
+              }
+            })
           } else if (msg.type == 'transaction') {
             switch(msg.msg.stage) {
               case 1:
@@ -104,6 +139,12 @@ export default {
                     stage: 1,
                     IBookId: msg.msg.bookId
                   })
+                  store.commit('setMsgChatRecord', {
+                    otherSideId: msg.receiveId,
+                    sender: 'system',
+                    sendTime: (new Date()).format('yyyy-MM-dd hh:mm:ss'),
+                    msg: '等待对方同意'
+                  })
                   break
               case 2:
                 store.commit('setMsgIBookId', {
@@ -111,24 +152,54 @@ export default {
                   stage: 0,
                   IBookId: msg.msg.bookId
                 })
+                store.commit('setMsgChatRecord', {
+                  otherSideId: msg.receiveId,
+                  sender: 'system',
+                  sendTime: (new Date()).format('yyyy-MM-dd hh:mm:ss'),
+                  msg: '你拒绝了对方的图书，等待对方重新选择'
+                })
                 break
               case 3:
                 store.commit('setMsgStage', {
                   otherSideId: msg.receiveId,
                   stage: 3
                 })
+                store.commit('setMsgChatRecord', {
+                  otherSideId: msg.receiveId,
+                  sender: 'system',
+                  sendTime: (new Date()).format('yyyy-MM-dd hh:mm:ss'),
+                  msg: '同意交易，请选择你的地址'
+                })
                 break
               case 4:
+                store.commit('setMsgStage', {
+                  otherSideId: msg.receiveId,
+                  stage: 4
+                })
+                store.commit('setMsgChatRecord', {
+                  otherSideId: msg.receiveId,
+                  sender: 'myself',
+                  sendTime: (new Date()).format('yyyy-MM-dd hh:mm:ss'),
+                  msg: '收件人：' + msg.msg.address.receiver + '。联系方式：' + msg.msg.address.receiverTel + '。地址：' + msg.msg.address.address + '。'
+                })
+                store.commit('setMsgChatRecord', {
+                  otherSideId: msg.receiveId,
+                  sender: 'system',
+                  sendTime: (new Date()).format('yyyy-MM-dd hh:mm:ss'),
+                  msg: '交易完成'
+                })
+                break
             }
-            msg.msg = JSON.stringify(msg.msg)
           } else if (msg.type == 'text') {
             let chatRecord = {
+              otherSideId: msg.receiveId,
               sender: 'myself',
               sendTime: (new Date()).format('yyyy-MM-dd hh:mm:ss'),
               msg: msg.msg
             }
             store.commit('setMsgChatRecord', chatRecord)
           }
+          
           resolve()
         } else {
           reject()

@@ -34,6 +34,9 @@ export default new Vuex.Store({
     },
     // 插入消息记录
     setMsgRecord: function (state, payload) {
+      if (state.msg == null) {
+        state.msg = []
+      }
       state.msg.splice(0, 0, payload)
       setStorageMsg(state.msg)
     },
@@ -47,7 +50,6 @@ export default new Vuex.Store({
     // 设置对方选择的地址
     setMsgAddr: function (state, payload) {
       let index = OtherSideIdIndex(state.msg, payload.otherSideId)
-      state.msg[index].stage = payload.stage
       state.msg[index].otherSideAddr = payload.addr
       setStorageMsg(state.msg)
     },
@@ -60,8 +62,14 @@ export default new Vuex.Store({
     // 设置聊天记录
     setMsgChatRecord: function (state, payload) {
       let index = OtherSideIdIndex(state.msg, payload.otherSideId)
+      delete payload.otherSideId
       state.msg[index].chatRecord.push(payload)
       setStorageMsg(state.msg)
     },
+    setMsgNameAvatar: function (state, payload) {
+      let index = OtherSideIdIndex(state.msg, payload.otherSideId)
+      state.msg[index].nickname = payload.nickname
+      state.msg[index].avatar = payload.avatar
+    }
   }
 })

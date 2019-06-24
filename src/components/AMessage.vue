@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="msg" :class="['msg', sender=='myself' ? 'r-msg' : 'l-msg']">
+    <div class="msg" :class="['msg', sender=='myself' ? 'r-msg' : 'l-msg']" v-if="sender != 'system'">
       <img :src="avatar ? avatar : '/default_avatar.png'" alt="" class="avatar">
       <div class="content">
         <div>
@@ -10,6 +10,9 @@
           <div class="text">{{msg}}</div>
         </div>
       </div>
+    </div>
+    <div class="system" v-if="sender == 'system'">
+      {{msg}}
     </div>
   </div>
 </template>
@@ -85,5 +88,15 @@ export default {
     padding: 13px;
     word-wrap:break-word;
   }
+}
+.system {
+  width: 70%;
+  margin: 20px auto;
+  background-color: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 5px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
 }
 </style>

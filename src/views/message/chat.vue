@@ -84,6 +84,9 @@
             <div class="address">{{item.province + item.city + item.area + item.detailedAddress}}</div>
           </div>
         </div>
+        <div class="stage-4" v-if="showStage == 'stage-4'">
+          <van-button type="warning">结束聊天</van-button>
+        </div>
       </div>
     </div>
     <div class="msg">
@@ -152,6 +155,9 @@ export default {
         case 'stage-3':
           this.getAddress()
           return '选择您的地址'
+        case 'stage-4':
+          this.getAddress()
+          return '交易完成'
         default :
           return ''
       }
@@ -166,8 +172,10 @@ export default {
         return 'initiative-1'
       } else if (this.msg.stage == 1 && this.msg.bookHost == true) {
         return 'passive-1'
-      } else if (this.msg.stage == 3) {
+      } else if (this.msg.stage == 3 ) {
         return 'stage-3'
+      } else if (this.msg.stage == 4) {
+        return 'stage-4'
       } else {
         return ''
       }
@@ -186,15 +194,17 @@ export default {
           this.text = ''
           this.btnText = '发送'
         }).catch( () => {
+          this.$toast.fail('发送失败')
           this.btnText = '发送'
         })
       }
     },
     // 获取主动方的所有图书，用于主动方挑选要交易的图书
     getBooks: function () {
-      this.$toast.loading('加载图书列表')
+      //this.$toast.loading('加载图书列表') //莫名的bug，加上这句会不停的请求
       net.get('/books/user?state=fail').then( res => {
         if (res.data.code == 200) {
+          //this.$toast.clear()
           this.books = res.data.data
         } else {
           this.$toast('服务器异常')
@@ -221,7 +231,7 @@ export default {
     },
     getBook: function (id) {
       return new Promise((resolve, reject) => {
-        this.$toast.loading('加载中')
+        //this.$toast.loading('加载中') // 莫名的bug，同上
         net.get('/books?id=' + id).then( res => {
           if (res.data.code == 200) {
             resolve(res.data.data)
@@ -237,10 +247,10 @@ export default {
     },
     // 获取自己的地址列表
     getAddress: function () {
-      this.$toast.loading('加载地址中')
+      //this.$toast.loading('加载地址中')
       net.get('/addresses').then( res => {
         if (res.data.code == 200) {
-          this.$toast.clear()
+          //this.$toast.clear()
           this.addresses = res.data.data
         } else {
           this.$toast('网络异常')
@@ -298,7 +308,16 @@ export default {
           stage: 3
         }
       }).then( () => {
-        // 交易接口
+        // 请求交易接口
+        net.post('/trading?bookId='+ this.msg.PBookId +'&buyId='+ this.msg.otherSideId).then( res => {
+          if (res.data.code == 200) {
+            this.$toast.success('交易成功')
+          } else {
+            this.$toast.fail('交易失败')
+          }
+        }).catch( () => {
+          this.$toast.fail('网络异常')
+        })
       })
     },
     // 拒绝交换
@@ -316,7 +335,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .log-area {
-  margin: 15px 15px 60px 15px;
+  margin: 15px 15px 120px 15px;
 }
 .transaction {
   position: fixed;
@@ -490,6 +509,11 @@ export default {
       .address {
         color: #555;
       }
+    }
+    .stage-4 {
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
     }
     .switch-book {
       display: flex;

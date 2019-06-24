@@ -57,21 +57,25 @@ export default {
       }
     }).then( res => {
       if (res.data.code == 200) {
-        this.bookInfo = res.data.data
-        net.get('/users/id', {
-          params: {
-            id: res.data.data.userId
-          }
-        }).then( res => {
-          if (res.data.code == 200) {
-            this.$toast.clear()
-            this.bookOfMaster = res.data.data
-          } else {
-            this.$toast.fail('服务器异常')
-          }
-        }).catch( () => {
-          this.$toast.fail('网络异常')
-        })
+        if (res.data.data.state == 'success') { // 图书已交易
+          this.$router.go(-1)
+        } else {
+          this.bookInfo = res.data.data
+          net.get('/users/id', {
+            params: {
+              id: res.data.data.userId
+            }
+          }).then( res => {
+            if (res.data.code == 200) {
+              this.$toast.clear()
+              this.bookOfMaster = res.data.data
+            } else {
+              this.$toast.fail('服务器异常')
+            }
+          }).catch( () => {
+            this.$toast.fail('网络异常')
+          })
+        }
       } else {
         this.$toast.fail('服务器异常')
       }

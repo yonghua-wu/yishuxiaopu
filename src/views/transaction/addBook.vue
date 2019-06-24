@@ -113,10 +113,7 @@ export default {
         }
         return imgNames
       }
-      this.$toast.loading({
-        mask: true,
-        message: '上传图片中'
-      })
+      this.$toast.loading('上传图片中')
       uploadImgs().then( res => {
         let data = {
           name: this.bookTitle,
