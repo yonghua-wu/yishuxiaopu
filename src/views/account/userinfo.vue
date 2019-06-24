@@ -112,9 +112,9 @@ export default {
       data.append('file', file.file)
       this.$toast.loading('上传头像中')
       net.post('/upload', data).then( res => {
-        if (res.data.code == 200) {
+        if (res.data) {
           this.$toast.clear()
-          this.confirm('headPortrait', res.data.data)
+          this.confirm('headPortrait', res.data)
         } else {
           this.$toast.fail('头像上传失败')
         }

@@ -6,7 +6,7 @@
       </div>
       <div class="content">
         <div class="msg">
-          <div class="nickname">{{item.nickname ? item.nickname : '----'}}</div>
+          <div class="nickname">{{item.nickname ? item.nickname : '用户'+item.otherSideId}}</div>
         </div>
       </div>
     </div>

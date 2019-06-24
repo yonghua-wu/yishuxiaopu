@@ -19,7 +19,8 @@ function setStorageMsg(msg) {
 export default new Vuex.Store({
   state: {
     isLogin: false,
-    msg: []
+    msg: [],
+    homeIndex: 0
   },
   mutations: {
     setLogged: function(state) {
@@ -70,6 +71,15 @@ export default new Vuex.Store({
       let index = OtherSideIdIndex(state.msg, payload.otherSideId)
       state.msg[index].nickname = payload.nickname
       state.msg[index].avatar = payload.avatar
+      setStorageMsg(state.msg)
+    },
+    closeMsg: function (state, payload) {
+      let index = OtherSideIdIndex(state.msg, payload.otherSideId)
+      delete state.msg[index]
+      setStorageMsg(state.msg)
+    },
+    setHomeIndex: function(state, payload) {
+      state.homeIndex = payload.homeIndex
     }
   }
 })

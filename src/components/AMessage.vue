@@ -31,10 +31,10 @@ export default {
       return time(new Date(this.time))
     },
     avatarUrl: function () {
-      if (this.avatar.length < 37) {
-        return config.STATIC + this.avatar
-      } else if (!this.avatar) {
+      if (!this.avatar) {
         return '/default_avatar.png'
+      } else if (this.avatar.length < 37) {
+        return config.STATIC + this.avatar
       } else {
         return this.avatar
       }

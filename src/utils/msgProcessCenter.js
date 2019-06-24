@@ -22,6 +22,15 @@ export default {
           count: 1 // 未读消息数
         }
         store.commit('setMsgRecord', storeMsg)
+        net.get('/users/id?id=' + msg[i].sendId).then( res => {
+          if (res.data.code == 200) {
+            store.commit('setMsgNameAvatar', {
+              otherSideId: msg[i].sendId,
+              nickname: res.data.data.userName,
+              avatar: res.data.data.headPortrait
+            })
+          }
+        })
       } else if (msg[i].type == 'transaction') {
         let stage = JSON.parse(msg[i].msg).stage
         let addr

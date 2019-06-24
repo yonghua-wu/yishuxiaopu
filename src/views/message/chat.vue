@@ -85,7 +85,22 @@
           </div>
         </div>
         <div class="stage-4" v-if="showStage == 'stage-4'">
-          <van-button type="warning">结束聊天</van-button>
+          <div class="switch-book">
+            <div class="book">
+              <div class="img">
+                <img :src="initiativeBookImg" alt="">
+              </div>
+              <div class="name">{{initiativeBook?initiativeBook.name:'--'}}</div>
+            </div>
+            <img src="/arow.png" alt="" class="arow">
+            <div class="book">
+              <div class="img">
+                <img :src="passiveBookImg" alt="">
+              </div>
+              <div class="name">{{passiveBook?passiveBook.name:'---'}}</div>
+            </div>
+          </div>
+          <!-- <van-button class='warn-button' type="warning">结束聊天</van-button> -->
         </div>
       </div>
     </div>
@@ -157,7 +172,8 @@ export default {
           this.getAddress()
           return '选择您的地址'
         case 'stage-4':
-          this.getAddress()
+          this.getInitiativeBook()
+          this.getPassiveBook()
           return '交易完成'
         default :
           return ''
@@ -182,10 +198,16 @@ export default {
       }
     },
     passiveBookImg: function () {
-      return config.STATIC + (this.passiveBook.img.split(',')[0])
+      if (this.passiveBook) {
+        return config.STATIC + (this.passiveBook.img.split(',')[0])
+      }
+      return '/default_book.png'
     },
     initiativeBookImg: function () {
-      return config.STATIC + (this.initiativeBook.img.split(',')[0])
+      if (this.initiativeBook) {
+        return config.STATIC + (this.initiativeBook.img.split(',')[0])
+      }
+      return '/default_book.png'
     }
   },
   methods: {
@@ -339,11 +361,22 @@ export default {
     },
     bookImg: function (imgs) {
       if (imgs) {
-        return config.STATIC + (this.imgs.split(',')[0])
+        return config.STATIC + (imgs.split(',')[0])
       } else {
         return '/default_book.png'
       }
-    }
+    },
+    // closeChat: function () {
+    //   this.$dialog.confirm({
+    //     title: '确认关闭',
+    //     message: '确认结束聊天？'
+    //   }).then( () => {
+    //     this.$store.commit('closeMsg', {
+    //       otherSideId: this.$route.query.id
+    //     })
+    //     msgCenter.sendMsg({})
+    //   })
+    // }
   }
 }
 </script>
@@ -415,6 +448,10 @@ export default {
           .book-title {
             width: 100%;
             text-align: center;
+            overflow: hidden;
+            display:-webkit-box; //作为弹性伸缩盒子模型显示。
+            -webkit-box-orient:vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
+            -webkit-line-clamp:1; //显示的行
           }
         }
       }
@@ -525,9 +562,13 @@ export default {
       }
     }
     .stage-4 {
-      height: 50px;
-      line-height: 50px;
-      text-align: center;
+      padding: 15px;
+      .warn-button {
+        margin-top: 10px;
+        width: 100%;
+        height: 35px;
+        line-height: 35px;
+      }
     }
     .switch-book {
       display: flex;
