@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-row class="userinfo bcfff mbtm20" type="flex" align="center" @click.native="goLogin">
-      <img :src="userInfo.headPortrait ? userInfo.headPortrait : '/default_avatar.png'" alt="" class="avatar">
+      <img :src="avatar" alt="" class="avatar">
       <div class="nickname">{{userInfo.userName ? userInfo.userName : userInfo.phone}}</div>
     </van-row>
     <van-row class="features bcfff mbtm20">
@@ -35,6 +35,7 @@
 <script>
 import net from '../../utils/net.js'
 import storage from '../../utils/storage.js'
+import config from '../../utils/config.js'
 export default {
   data: function () {
     return {
@@ -49,18 +50,24 @@ export default {
       }
     }
   },
+  computed: {
+    avatar: function () {
+      if (!this.userInfo.headPortrait) {
+        return '/default_avatar.png'
+      } else if (this.userInfo.headPortrait.length < 37) {
+        return config.STATIC + this.userInfo.headPortrait
+      } else {
+        return this.userInfo.headPortrait
+      }
+    }
+  },
   mounted: function () {
     if (this.$store.state.isLogin) {
       let userinfo = storage.get('userInfo') || ''
       if (userinfo == '') {
         net.get('/users').then( res => {
-          // eslint-disable-next-line
-          console.log(res)
           this.userInfo = res.data.data
           storage.set('userInfo', JSON.stringify(res.data.data))
-        }).catch( err => {
-          // eslint-disable-next-line
-          console.log(err)
         })
       } else {
         this.userInfo = JSON.parse(userinfo)

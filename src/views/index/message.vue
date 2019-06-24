@@ -2,7 +2,7 @@
   <div>
     <div class="item" v-for="(item) in msgList" v-bind:key="item.otherSideId" @click="$router.push('/msg/chat?id='+item.otherSideId)">
       <div class="header">
-        <img :src="item.avatar ? item.avatar : '/default_avatar.png'" alt="">
+        <img :src="avatar(item.avatar)" alt="">
       </div>
       <div class="content">
         <div class="msg">
@@ -14,10 +14,22 @@
   </div>
 </template>
 <script>
+import config from '../../utils/config.js'
 export default {
   computed: {
     msgList: function() {
       return this.$store.state.msg
+    }
+  },
+  methods: {
+    avatar: function (name) {
+      if (!name) {
+        return '/default_avatar.png'
+      } else if (name.length < 37) {
+        return config.STATIC + name
+      } else {
+        return name
+      }
     }
   }
 }

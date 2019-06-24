@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="msg" :class="['msg', sender=='myself' ? 'r-msg' : 'l-msg']" v-if="sender != 'system'">
-      <img :src="avatar ? avatar : '/default_avatar.png'" alt="" class="avatar">
+      <img :src="avatarUrl" alt="" class="avatar">
       <div class="content">
         <div>
           <div class="time">{{humanTime}}</div>
@@ -18,6 +18,7 @@
 </template>
 <script>
 import time from '../utils/time.js'
+import config from '../utils/config.js'
 export default {
   props: {
     sender: String,
@@ -28,6 +29,15 @@ export default {
   computed: {
     humanTime: function () {
       return time(new Date(this.time))
+    },
+    avatarUrl: function () {
+      if (this.avatar.length < 37) {
+        return config.STATIC + this.avatar
+      } else if (!this.avatar) {
+        return '/default_avatar.png'
+      } else {
+        return this.avatar
+      }
     }
   }
 }

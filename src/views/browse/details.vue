@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="seller-bar">
-      <img :src="bookOfMaster.headPortrait?bookOfMaster.headPortrait:'/default_avatar.png'" alt="">
+      <img :src="avatar" alt="">
       <div class="userinfo">
         <div class="nickname">{{bookOfMaster.userName?bookOfMaster.userName:'用户'+bookOfMaster.id}}</div>
         <div class="other">
@@ -92,6 +92,15 @@ export default {
       return this.bookInfo.img.split(',').map( item => {
         return config.STATIC + item
       })
+    },
+    avatar: function () {
+      if (!this.bookOfMaster.headPortrait) {
+        return '/default_avatar.png'
+      } else if (this.bookOfMaster.headPortrait.length < 37) {
+        return config.STATIC + this.bookOfMaster.headPortrait
+      } else {
+        return this.bookOfMaster.headPortrait
+      }
     }
   },
   methods: {

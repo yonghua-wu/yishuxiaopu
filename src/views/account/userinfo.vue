@@ -3,7 +3,7 @@
     <div class="title">个人信息</div>
     <van-uploader class="upload" :after-read="after" :max-size="2097152" @oversize="oversize">
       <van-cell title="头像" center>
-        <img class="avatar-img" :src="userInfo.headPortrait ? userInfo.headPortrait : '/default_avatar.png'" alt="">
+        <img class="avatar-img" :src="avatar" alt="">
       </van-cell>
     </van-uploader>
     <van-cell title="昵称" :value="userInfo.userName" is-link @click="showSetNickname = !showSetNickname" />
@@ -41,6 +41,7 @@
 import area from '../../lib/area.js'
 import storage from '../../utils/storage.js'
 import net from '../../utils/net.js'
+import config from '../../utils/config.js'
 export default {
   data: function() {
     return {
@@ -54,6 +55,17 @@ export default {
       newCity: '',
       newIdentity: '',
       userInfo: {}
+    }
+  },
+  computed: {
+    avatar: function () {
+      if (!this.userInfo.headPortrait) {
+        return '/default_avatar.png'
+      } else if (this.userInfo.headPortrait.length < 37) {
+        return config.STATIC + this.userInfo.headPortrait
+      } else {
+        return this.userInfo.headPortrait
+      }
     }
   },
   mounted: function () {

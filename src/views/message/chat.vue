@@ -14,7 +14,7 @@
           <div class="book-list">
             <div class="item" v-for="(item, index) in books" :key="index" @click="selectedBook(index)">
               <div class="img">
-                <img src="/default_book.png" alt="">
+                <img :src="bookImg(item.img)" alt="">
               </div>
               <div class="book-title">{{item.name}}</div>
             </div>
@@ -28,7 +28,7 @@
             <div class="book-title">{{passiveBook?passiveBook.name:'---'}}</div>
           </div>
           <div class="img">
-            <img src="/default_book.png">
+            <img :src="passiveBookImg">
           </div>
         </div>
         
@@ -37,14 +37,14 @@
           <div class="switch-book">
             <div class="book">
               <div class="img">
-                <img src="/default_book.png" alt="">
+                <img :src="initiativeBookImg" alt="">
               </div>
               <div class="name">{{initiativeBook?initiativeBook.name:'--'}}</div>
             </div>
             <img src="/arow.png" alt="" class="arow">
             <div class="book">
               <div class="img">
-                <img src="/long.png" alt="">
+                <img :src="passiveBookImg" alt="">
               </div>
               <div class="name">{{passiveBook?passiveBook.name:'---'}}</div>
             </div>
@@ -56,14 +56,14 @@
           <div class="switch-book">
             <div class="book">
               <div class="img">
-                <img src="/default_book.png" alt="">
+                <img :src="initiativeBookImg" alt="">
               </div>
               <div class="name">{{initiativeBook?initiativeBook.name:'--'}}</div>
             </div>
             <img src="/arow.png" class="arow">
             <div class="book">
               <div class="img">
-                <img src="/default_book.png">
+                <img :src="passiveBookImg">
               </div>
               <div class="name">{{passiveBook?passiveBook.name:'---'}}</div>
             </div>
@@ -100,6 +100,7 @@ import storage from '../../utils/storage.js'
 import net from '../../utils/net.js'
 import msgCenter from '../../utils/msgProcessCenter.js'
 import AMessage from '../../components/AMessage'
+import config from '../../utils/config.js'
 export default {
   components: {
     'a-message': AMessage
@@ -179,6 +180,12 @@ export default {
       } else {
         return ''
       }
+    },
+    passiveBookImg: function () {
+      return config.STATIC + (this.passiveBook.img.split(',')[0])
+    },
+    initiativeBookImg: function () {
+      return config.STATIC + (this.initiativeBook.img.split(',')[0])
     }
   },
   methods: {
@@ -329,6 +336,13 @@ export default {
           stage: 2
         }
       })
+    },
+    bookImg: function (imgs) {
+      if (imgs) {
+        return config.STATIC + (this.imgs.split(',')[0])
+      } else {
+        return '/default_book.png'
+      }
     }
   }
 }
