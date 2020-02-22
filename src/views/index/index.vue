@@ -17,7 +17,6 @@ export default {
     }
   },
   mounted: function(){
-    // console.log('index mounted',this.$store.state.homeIndex)
     if (this.$route.path == '/') {
       this.$router.push('/home')
     }
